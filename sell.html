@@ -1,1 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sell - Odrop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="images/Drop.png" />
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <div class="max-w-4xl mx-auto p-6">
+    <a href="marketplace.html" class="inline-block mb-6 text-slate-600 hover:text-sky-600">&larr; Back to marketplace</a>
+
+    <div class="bg-white rounded-2xl p-8 shadow">
+      <h2 class="text-2xl font-semibold mb-4">Create a Listing</h2>
+
+      <form id="sell-form" class="space-y-4">
+        <div>
+          <label class="text-sm font-medium">Product image (required)</label>
+          <input id="product-image" type="file" accept="image/*" class="block mt-2" required />
+          <div id="product-image-preview" class="mt-3 w-full max-w-sm rounded-lg overflow-hidden bg-slate-100 hidden"><img id="prod-img-el" src="" alt="preview" class="w-full object-cover" /></div>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium">Title (required)</label>
+          <input id="product-title" type="text" maxlength="80" class="w-full mt-2 px-4 py-2 border rounded" required />
+        </div>
+
+        <div>
+          <label class="text-sm font-medium">Short description (max 50 characters)</label>
+          <input id="product-desc" type="text" maxlength="50" class="w-full mt-2 px-4 py-2 border rounded" required />
+          <p id="desc-count" class="text-xs text-slate-400 mt-1">0 / 50</p>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium">Choose accepted crypto</label>
+          <select id="product-coin" class="w-full mt-2 px-4 py-2 border rounded" required>
+            <option value="">Select one</option>
+            <option value="BTC">Bitcoin (BTC)</option>
+            <option value="ETH">Ethereum (ETH)</option>
+            <option value="XRP">XRP</option>
+            <option value="USDC">USDC</option>
+            <option value="PLS">PulseChain (PLS)</option>
+          </select>
+        </div>
+
+        <div class="flex gap-3">
+          <button type="submit" class="px-6 py-2 rounded bg-sky-600 text-white">Create Listing</button>
+          <button id="clear-form" type="button" class="px-6 py-2 rounded border">Clear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
 
