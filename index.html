@@ -1,138 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MSI Cyborg 15 | Odrop</title>
-  <link rel="icon" type="image/png" href="../Drop.png">
-  <style>
-    :root {
-      --bg-color: #f5f7fa;
-      --text-color: #222;
-      --card-bg: #fff;
-      --nav-bg: #fff;
-    }
-    [data-theme="dark"] {
-      --bg-color: #121212;
-      --text-color: #eee;
-      --card-bg: #1e1e1e;
-      --nav-bg: #1e1e1e;
-    }
-
-    body {
-      margin: 0;
-      font-family: "Poppins", sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      transition: 0.3s;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--nav-bg);
-      padding: 1rem 2rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .logo img {
-      height: 45px;
-      border-radius: 50%;
-    }
-
-    nav a {
-      margin: 0 1rem;
-      text-decoration: none;
-      color: var(--text-color);
-      font-weight: 500;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .product-container {
-      max-width: 900px;
-      margin: 3rem auto;
-      background: var(--card-bg);
-      padding: 2rem;
-      border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .product-container img {
-      max-width: 80%;
-      border-radius: 15px;
-      margin-bottom: 1.5rem;
-      transition: transform 0.3s ease;
-    }
-
-    .product-container img:hover {
-      transform: scale(1.02);
-    }
-
-    .price {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #007BFF;
-    }
-
-    .description {
-      font-size: 1.1rem;
-      margin-top: 1rem;
-      line-height: 1.6;
-    }
-
-    .nowpayments {
-      margin-top: 2rem;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
-      opacity: 0.7;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Odrop | Tech Simplified</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <div class="logo">
-      <img src="../Drop.png" alt="Odrop Logo">
-      <strong>Odrop</strong>
-    </div>
-    <nav>
-      <a href="../index.html">Home</a>
-      <a href="msi.html">Products</a>
+    <nav class="navbar">
+      <div class="logo">Odrop</div>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
     </nav>
   </header>
 
-  <main>
-    <div class="product-container">
-      <img src="../images/msi-cyborg15.png" alt="MSI Cyborg 15 Gaming Laptop">
-
-      <h1>MSI Cyborg 15 Gaming Laptop</h1>
-      <p class="price">$1000</p>
-      <p class="description">
-        Intel Core i7-13620H, RTX 4050 GPU, 16GB DDR5 RAM, and 512GB SSD — built for high-end gaming performance.
-      </p>
-
-      <div class="nowpayments">
-        <img src="../images/nowpayments-button.png" alt="Pay with NOWPayments" width="200">
-      </div>
+  <section id="home" class="hero">
+    <div class="hero-content">
+      <h1>Tech That Fits Your World</h1>
+      <p>Shop cutting-edge gear, hand-picked for performance.</p>
+      <a href="#products" class="btn">Explore Products</a>
     </div>
-  </main>
+  </section>
+
+  <section id="about" class="about">
+    <h2>About Odrop</h2>
+    <p>Odrop delivers the latest in gaming, productivity, and creative technology — all sourced from trusted suppliers like Newegg. We make tech accessible and crypto-friendly for everyone.</p>
+  </section>
+
+  <section id="products" class="products">
+    <h2>Coming Soon</h2>
+    <p>Stay tuned — our curated product line is launching shortly.</p>
+  </section>
 
   <footer>
-    © 2025 Odrop | Powered by NOWPayments
+    <p>© 2025 Odrop — Powered by NOWPayments | Built for modern tech lovers.</p>
   </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
