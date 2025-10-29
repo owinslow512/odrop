@@ -13,79 +13,95 @@
       padding: 0;
     }
     header {
+      display: flex;
+      align-items: center;
       background: #0d1117;
       color: white;
-      text-align: center;
-      padding: 25px 10px;
+      padding: 15px 20px;
+    }
+    header img {
+      width: 55px;
+      height: 55px;
+      margin-right: 15px;
+      border-radius: 50%;
+    }
+    header h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+    header p {
+      font-size: 14px;
+      margin: 0;
+      color: #bbb;
     }
     .product {
       background: white;
       border-radius: 12px;
       padding: 20px;
       margin: 20px auto;
-      max-width: 700px;
+      max-width: 600px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
     .product img {
       width: 100%;
       border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .product img:hover {
+      transform: scale(1.02);
     }
     .product h2 {
       margin-top: 10px;
-    }
-    .product p {
-      font-size: 16px;
-      line-height: 1.5;
-    }
-    .buy-btn img {
-      width: 180px;
-      margin-top: 10px;
-      transition: transform 0.2s;
-    }
-    .buy-btn img:hover {
-      transform: scale(1.05);
     }
     footer {
       text-align: center;
       padding: 20px;
       color: #777;
     }
+    .buy-button {
+      display: inline-block;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>Odrop</h1>
-    <p>Tech. Gaming. Smart Deals.</p>
+    <img src="Drop.png" alt="Odrop Logo">
+    <div>
+      <h1>Odrop</h1>
+      <p>Tech. Gaming. Smart Deals.</p>
+    </div>
   </header>
 
-  <!-- Product 1 -->
   <div class="product">
-    <img src="https://c1.neweggimages.com/productimage/nb300/2WC-000C-0GXH3-01.jpg" alt="MSI Cyborg 15 Gaming Laptop">
+    <a href="https://www.newegg.com/msi-cyborg-15-6-geforce-rtx-4050-laptop-gpu-intel-core-i7-13620h-fhd-16gb-memory-512-gb-ssd/p/2WC-000C-0GXH3?Item=2WC-000C-0GXH3" target="_blank">
+      <img src="https://c1.neweggimages.com/productimage/nb300/2WC-000C-0GXH3-01.jpg" alt="MSI Cyborg 15 Gaming Laptop" />
+    </a>
     <h2>MSI Cyborg 15 Gaming Laptop</h2>
-    <p><strong>Price:</strong> $1000</p>
-    <p>
-      Featuring an Intel Core i7-13620H processor, NVIDIA GeForce RTX 4050 GPU, 16GB DDR5 RAM, and a fast 512GB SSD — the MSI Cyborg 15 is built for gamers who want smooth performance and sleek design. FHD 15.6” display and RGB backlit keyboard complete this high-end setup.
-    </p>
-    <a class="buy-btn" href="https://nowpayments.io/payment/?iid=5763679990" target="_blank" rel="noreferrer noopener">
-      <img src="https://nowpayments.io/images/embeds/payment-button-black.svg" alt="Pay with Crypto">
-    </a>
+    <p>Intel Core i7-13620H, RTX 4050 GPU, 16GB RAM, 512GB SSD — <strong>$1000</strong></p>
+    <p>High-performance gaming laptop sourced from Newegg, perfect for gamers and creators.</p>
+    <div class="buy-button">
+      <a href="https://nowpayments.io/payment/?iid=5763679990&source=button" target="_blank" rel="noreferrer noopener">
+        <img src="https://nowpayments.io/images/embeds/payment-button-black.svg" alt="Pay with Crypto">
+      </a>
+    </div>
   </div>
 
-  <!-- Product 2 -->
   <div class="product">
-    <img src="https://c1.neweggimages.com/productimage/nb300/3D5-006G-00042-01.jpg" alt="Skytech Shadow Gaming PC">
-    <h2>Skytech Shadow Gaming PC</h2>
-    <p><strong>Price:</strong> $1100</p>
-    <p>
-      Power through your favorite games with the Skytech Shadow Gaming PC. Equipped with an AMD Ryzen 5 5600 processor, RTX 3060 GPU, 16GB DDR4 RAM, and a 1TB NVMe SSD, this desktop offers unbeatable speed, smooth graphics, and stunning design — ready for next-gen gaming.
-    </p>
-    <a class="buy-btn" href="https://nowpayments.io/payment/?iid=5073979985" target="_blank" rel="noreferrer noopener">
-      <img src="https://nowpayments.io/images/embeds/payment-button-black.svg" alt="Pay with Crypto">
+    <a href="https://www.newegg.com/p/3D5-006G-00042?Item=9SIC01CKMH7710" target="_blank">
+      <img src="https://c1.neweggimages.com/productimage/nb300/3D5-006G-00042-01.jpg" alt="Gaming PC Tower" />
     </a>
+    <h2>Gaming PC Tower</h2>
+    <p>AMD Ryzen 7, RTX 4060, 16GB RAM, 1TB SSD — <strong>$1100</strong></p>
+    <p>Powerful pre-built gaming PC ready for any task. Ships directly from Newegg.</p>
+    <div class="buy-button">
+      <a href="https://nowpayments.io/payment/?iid=5073979985&source=button" target="_blank" rel="noreferrer noopener">
+        <img src="https://nowpayments.io/images/embeds/payment-button-black.svg" alt="Pay with Crypto">
+      </a>
+    </div>
   </div>
 
-  <footer>
-    © 2025 Odrop | All rights reserved.
-  </footer>
+  <footer>© 2025 Odrop | Powered by NOWPayments</footer>
 </body>
 </html>
