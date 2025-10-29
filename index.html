@@ -4,27 +4,149 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Odrop | Tech. Gaming. Smart Deals.</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="Drop.png">
+  <style>
+    :root {
+      --bg-color: #f5f7fa;
+      --text-color: #222;
+      --card-bg: #fff;
+      --nav-bg: #fff;
+    }
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --text-color: #eee;
+      --card-bg: #1e1e1e;
+      --nav-bg: #1e1e1e;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--nav-bg);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo img {
+      height: 45px;
+      border-radius: 50%;
+    }
+
+    nav a {
+      margin: 0 1rem;
+      text-decoration: none;
+      color: var(--text-color);
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .cart {
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 4rem auto;
+      text-align: center;
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .description {
+      font-size: 1.1rem;
+      margin-top: 1rem;
+      line-height: 1.6;
+    }
+
+    .toggle-switch {
+      background: #ccc;
+      border-radius: 15px;
+      width: 45px;
+      height: 25px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .toggle-circle {
+      background: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      position: absolute;
+      top: 2.5px;
+      left: 3px;
+      transition: 0.3s;
+    }
+
+    [data-theme="dark"] .toggle-circle {
+      left: 22px;
+      background: #ffcd00;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+  </style>
 </head>
 <body>
   <header>
-    <img src="images/Drop.png" class="logo" alt="Odrop Logo">
+    <div class="logo">
+      <img src="Drop.png" alt="Odrop Logo">
+      <strong>Odrop</strong>
+    </div>
     <nav>
       <a href="index.html">Home</a>
       <a href="products/msi.html">Products</a>
+      <span class="cart">🛒</span>
+      <div class="toggle-switch" id="theme-toggle">
+        <div class="toggle-circle"></div>
+      </div>
     </nav>
   </header>
 
   <main>
-    <section class="hero">
+    <div class="container">
       <h1>Welcome to Odrop</h1>
-      <p>Affordable gaming gear, powered by crypto payments.</p>
-      <a href="products/msi.html" class="btn">View Products</a>
-    </section>
+      <p class="description">
+        Discover powerful gaming laptops and PCs at unbeatable prices — all with secure crypto payments via NOWPayments.
+      </p>
+      <a href="products/msi.html" style="text-decoration:none; color: #007BFF; font-weight:600;">Shop Now →</a>
+    </div>
   </main>
 
   <footer>
-    <p>© 2025 Odrop | Powered by NOWPayments</p>
+    © 2025 Odrop | Powered by NOWPayments
   </footer>
+
+  <script>
+    const toggle = document.getElementById("theme-toggle");
+    toggle.addEventListener("click", () => {
+      document.body.dataset.theme = document.body.dataset.theme === "dark" ? "" : "dark";
+    });
+  </script>
 </body>
 </html>
