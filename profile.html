@@ -1,25 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Profile | Odrop</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script type="module">
+    // Firebase SDK imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCPnsRvqauy3OtBuMc-q39HFNc6u-bk6nw",
+      authDomain: "odrop-98516.firebaseapp.com",
+      projectId: "odrop-98516",
+      storageBucket: "odrop-98516.firebasestorage.app",
+      messagingSenderId: "127741872375",
+      appId: "1:127741872375:web:2acc4fb95ffb06b63e2bf2"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Navigation functions
+    window.goHome = () => (window.location.href = "index.html");
+    window.goProducts = () => (window.location.href = "products.html");
+    window.goProfile = () => (window.location.href = "profile.html");
+    window.goAbout = () => (window.location.href = "about.html");
+    window.goContact = () => (window.location.href = "contact.html");
+    window.goLogin = () => (window.location.href = "login.html");
+    window.goSignup = () => (window.location.href = "signup.html");
+
+    // Profile logic
+    onAuthStateChanged(auth, (user) => {
+      const usernameEl = document.getElementById("username");
+      const emailEl = document.getElementById("email");
+      const usernameInput = document.getElementById("new-username");
+
+      if (user) {
+        usernameEl.textContent = user.displayName || "User";
+        emailEl.textContent = user.email;
+      } else {
+        window.location.href = "login.html";
+      }
+
+      document.getElementById("save-username").addEventListener("click", async () => {
+        const newName = usernameInput.value.trim();
+        if (!newName || newName.length < 3) {
+          alert("Username must be at least 3 characters long.");
+          return;
+        }
+        if (/[^a-zA-Z0-9_]/.test(newName)) {
+          alert("Only letters, numbers, and underscores allowed.");
+          return;
+        }
+
+        await updateProfile(auth.currentUser, { displayName: newName });
+        usernameEl.textContent = newName;
+        usernameInput.value = "";
+        alert("Username updated!");
+      });
+
+      document.getElementById("logout").addEventListener("click", async () => {
+        await signOut(auth);
+        window.location.href = "login.html";
+      });
+    });
+  </script>
 </head>
-<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-6">
-  <div class="bg-gray-800 rounded-2xl p-8 w-full max-w-md shadow-lg">
-    <div class="flex flex-col items-center">
-      <img id="profile-pic" src="https://api.dicebear.com/8.x/bottts/svg?seed=odropuser" alt="Profile Picture" class="w-32 h-32 rounded-full mb-4 border-4 border-blue-500">
-      <h2 id="profile-name" class="text-2xl font-bold mb-1">User</h2>
-      <p id="profile-email" class="text-gray-400 text-sm mb-6">Loading...</p>
-    </div>
 
-    <div class="space-y-4">
-      <input id="username-input" type="text" placeholder="Change username..." class="w-full px-4 py-2 rounded bg-gray-700 focus:ring-2 focus:ring-blue-500">
-      <button id="save-username-btn" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-semibold transition">Save Username</button>
-      <button id="logout-btn" class="w-full bg-red-600 hover:bg-red-700 py-2 rounded font-semibold transition">Logout</button>
-    </div>
-  </div>
+<body class="bg-gray-900 text-white flex flex-col min-h-screen">
 
-  <script type="module" src="auth.js"></script>
+  <!-- ✅ Navbar -->
+  <nav class="bg-gray-800 text-white shadow-md flex items-center justify-between px-6 py-3 fixed w-full top-0 z-50">
+    <div onclick="goHome()" class="text-2xl font-bold cursor-pointer hover:text-blue-400 transition">
+      Odrop
+    </div>
+    <div class="space-x-6 hidden md:flex">
+      <button onclick="goHome()" class="hover:text-blue-400 transition">Home</button>
+      <button onclick="goProducts()" class="hover:text-blue-400 transition">Marketplace</button>
+      <button onclick="goProfile()" class="hover:text-blue-400 transition">Profile</button>
+      <button onclick="goAbout()" class="hover:text-blue-400 transition">About</button>
+      <button onclick="goContact()" class="hover:text-blue-400 transition">Contact</button>
+    </div>
+    <div class="flex items-center space-x-4">
+      <button onclick="goLogin()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm">Login</button>
+      <button onclick="goSignup()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm">Sign Up</button>
+    </div>
+  </nav>
+
+  <!-- Spacer for fixed navbar -->
+  <div class="h-16"></div>
+
+  <!-- Profile Card -->
+  <main class="flex-grow flex justify-center items-center p-6">
+    <div class="bg-gray-800 rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
+      <img src="https://api.dicebear.com/7.x/bottts/svg?seed=user"
+        alt="Profile" class="w-32 h-32 rounded-full mx-auto border-4 border-blue-500 mb-4" />
+      <h2 id="username" class="text-2xl font-bold mb-2">Loading...</h2>
+      <p id="email" class="text-gray-400 text-sm mb-6">Loading...</p>
+
+      <input id="new-username" type="text" placeholder="Change username..."
+        class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3">
+
+      <button id="save-username" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg mb-3">
+        Save Username
+      </button>
+
+      <button id="logout" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg">
+        Logout
+      </button>
+    </div>
+  </main>
+
+  <footer class="text-center text-gray-500 py-4 text-sm">
+    © 2025 Odrop. All rights reserved.
+  </footer>
+
 </body>
 </html>
