@@ -1,15 +1,14 @@
-// --- Firebase Authentication Script for Odrop ---
-// Import Firebase SDK modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { 
   getAuth, 
   createUserWithEmailAndPassword, 
   sendEmailVerification, 
   signInWithEmailAndPassword,
-  signOut 
+  signOut,
+  onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-// --- Firebase Configuration (from your console) ---
+// --- Firebase Config ---
 const firebaseConfig = {
   apiKey: "AIzaSyCPnsRvqauy3OtBuMc-q39HFNc6u-bk6nw",
   authDomain: "odrop-98516.firebaseapp.com",
@@ -19,11 +18,10 @@ const firebaseConfig = {
   appId: "1:127741872375:web:2acc4fb95ffb06b63e2bf2"
 };
 
-// --- Initialize Firebase ---
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// --- Sign Up Logic ---
+// --- Sign Up ---
 const signupForm = document.getElementById("signup-form");
 if (signupForm) {
   signupForm.addEventListener("submit", (e) => {
@@ -33,20 +31,15 @@ if (signupForm) {
 
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
-        sendEmailVerification(user)
-          .then(() => {
-            alert("✅ Account created! Please check your email for a verification link.");
-          });
+        sendEmailVerification(userCredential.user)
+          .then(() => alert("✅ Account created! Check your email for verification."));
         signupForm.reset();
       })
-      .catch((error) => {
-        alert(`❌ ${error.message}`);
-      });
+      .catch((error) => alert(`❌ ${error.message}`));
   });
 }
 
-// --- Login Logic ---
+// --- Login ---
 const loginForm = document.getElementById("login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", (e) => {
@@ -58,27 +51,49 @@ if (loginForm) {
       .then((userCredential) => {
         const user = userCredential.user;
         if (user.emailVerified) {
-          alert("✅ Login successful! Welcome back.");
-          window.location.href = "profile.html"; // Redirect
+          alert("✅ Logged in!");
+          window.location.href = "profile.html";
         } else {
-          alert("⚠️ Please verify your email before logging in.");
+          alert("⚠️ Please verify your email first.");
         }
       })
-      .catch((error) => {
-        alert(`❌ ${error.message}`);
-      });
+      .catch((error) => alert(`❌ ${error.message}`));
   });
 }
 
-// --- Logout Logic ---
-const logoutBtn = document.getElementById("logout-btn");
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", () => {
-    signOut(auth)
-      .then(() => {
-        alert("👋 You’ve been logged out.");
+// --- Profile Page Logic ---
+onAuthStateChanged(auth, (user) => {
+  if (window.location.pathname.endsWith("profile.html")) {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    // Show user data
+    document.getElementById("profile-email").textContent = user.email;
+    const savedUsername = localStorage.getItem(`odrop-username-${user.uid}`);
+    document.getElementById("profile-name").textContent = savedUsername || "User";
+
+    // Save username
+    const saveBtn = document.getElementById("save-username-btn");
+    const input = document.getElementById("username-input");
+    saveBtn.addEventListener("click", () => {
+      const newName = input.value.trim();
+      if (newName.length === 0 || /[^a-zA-Z0-9]/.test(newName)) {
+        alert("⚠️ Username must contain only letters or numbers.");
+        return;
+      }
+      localStorage.setItem(`odrop-username-${user.uid}`, newName);
+      document.getElementById("profile-name").textContent = newName;
+      input.value = "";
+      alert("✅ Username updated!");
+    });
+
+    // Logout
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      signOut(auth).then(() => {
         window.location.href = "login.html";
-      })
-      .catch((error) => alert(error.message));
-  });
-}
+      });
+    });
+  }
+});
