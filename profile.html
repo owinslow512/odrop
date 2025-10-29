@@ -1,56 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Profile - Odrop</title>
+  <meta charset="UTF-8">
+  <title>Profile | Odrop</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" href="images/Drop.png" />
 </head>
-<body class="bg-slate-50 text-slate-900">
-  <div class="max-w-4xl mx-auto p-6">
-    <a href="index.html" class="inline-block mb-6 text-slate-600 hover:text-sky-600">&larr; Back</a>
-
-    <div class="bg-white rounded-2xl p-8 shadow">
-      <h2 class="text-2xl font-semibold mb-4">Your Profile</h2>
-
-      <div class="grid md:grid-cols-3 gap-6">
-        <!-- left: avatar -->
-        <div class="col-span-1 flex flex-col items-center gap-4">
-          <div id="avatar-preview" class="w-40 h-40 rounded-full bg-slate-100 overflow-hidden flex items-center justify-center text-slate-400">
-            <span id="avatar-initial" class="text-3xl font-bold">O</span>
-            <img id="avatar-img" src="" class="w-full h-full object-cover hidden" alt="avatar" />
-          </div>
-          <input id="avatar-input" type="file" accept="image/*" class="text-sm" />
-          <div class="text-xs text-slate-500">Upload a square image — we will resize to 500×500 and crop to a circle.</div>
-        </div>
-
-        <!-- right: details -->
-        <div class="col-span-2">
-          <label class="block text-sm font-medium mb-2">Profile name (anytime)</label>
-          <input id="profile-name" class="w-full px-4 py-2 border rounded mb-4" placeholder="Display name" />
-
-          <label class="block text-sm font-medium mb-2">Username (letters, numbers, underscore only; change only once every 30 days)</label>
-          <div class="flex gap-3">
-            <input id="username" class="flex-1 px-4 py-2 border rounded" placeholder="username_no_special" />
-            <button id="change-username" class="px-4 py-2 rounded bg-sky-600 text-white">Change</button>
-          </div>
-          <p id="username-note" class="text-xs text-slate-500 mt-2">No special characters. Username can be changed once every 30 days.</p>
-
-          <div class="mt-6 flex gap-3">
-            <button id="save-profile" class="px-6 py-2 rounded bg-green-600 text-white">Save Profile</button>
-            <button id="clear-profile" class="px-6 py-2 rounded border">Reset</button>
-          </div>
-        </div>
-      </div>
-
-      <hr class="my-6" />
-      <h3 class="text-lg font-semibold mb-3">Your Listings</h3>
-      <div id="user-listings" class="grid md:grid-cols-2 gap-4"></div>
-    </div>
-  </div>
-
-  <script src="script.js" defer></script>
+<body class="bg-gray-900 flex flex-col items-center justify-center h-screen text-white">
+  <h1 class="text-4xl font-bold mb-6">Welcome to Odrop!</h1>
+  <button id="logout-btn" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-lg font-semibold transition">Logout</button>
+  <script type="module" src="auth.js"></script>
 </body>
 </html>
-
