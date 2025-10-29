@@ -1,107 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Odrop | Tech & Gaming Gear</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      color: #222;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      display: flex;
-      align-items: center;
-      background: #0d1117;
-      color: white;
-      padding: 15px 20px;
-    }
-    header img {
-      width: 55px;
-      height: 55px;
-      margin-right: 15px;
-      border-radius: 50%;
-    }
-    header h1 {
-      font-size: 24px;
-      margin: 0;
-    }
-    header p {
-      font-size: 14px;
-      margin: 0;
-      color: #bbb;
-    }
-    .product {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 600px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    .product img {
-      width: 100%;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    .product img:hover {
-      transform: scale(1.02);
-    }
-    .product h2 {
-      margin-top: 10px;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: #777;
-    }
-    .buy-button {
-      display: inline-block;
-      margin-top: 10px;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Odrop Store</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <img src="Drop.png" alt="Odrop Logo">
-    <div>
-      <h1>Odrop</h1>
-      <p>Tech. Gaming. Smart Deals.</p>
-    </div>
+    <a href="index.html" class="logo">
+      <img src="Drop.png" alt="Odrop Logo">
+      <span>Odrop</span>
+    </a>
   </header>
 
-  <div class="product">
-    <a href="https://www.newegg.com/msi-cyborg-15-6-geforce-rtx-4050-laptop-gpu-intel-core-i7-13620h-fhd-16gb-memory-512-gb-ssd/p/2WC-000C-0GXH3?Item=2WC-000C-0GXH3" target="_blank">
-      <img src="https://c1.neweggimages.com/productimage/nb300/2WC-000C-0GXH3-01.jpg" alt="MSI Cyborg 15 Gaming Laptop" />
-    </a>
-    <h2>MSI Cyborg 15 Gaming Laptop</h2>
-    <p>Intel Core i7-13620H, RTX 4050 GPU, 16GB RAM, 512GB SSD — <strong>$1000</strong></p>
-    <p>High-performance gaming laptop sourced from Newegg, perfect for gamers and creators.</p>
-    <div class="buy-button">
-      <a href="https://nowpayments.io/payment/?iid=5763679990&source=button" target="_blank" rel="noreferrer noopener">
-        <img src="https://nowpayments.io/images/embeds/payment-button-black.svg" alt="Pay with Crypto">
+  <main>
+    <h1>Featured Products</h1>
+
+    <div class="product-card">
+      <a href="msi.html">
+        <img src="https://c1.neweggimages.com/ProductImageCompressAll1280/2WC-000C-0GXH3-S01.jpg" alt="MSI Cyborg 15 Gaming Laptop">
+        <h2>MSI Cyborg 15 Gaming Laptop</h2>
+      </a>
+      <p><strong>Price:</strong> $1000</p>
+      <p>Intel Core i7-13620H, RTX 4050 GPU, 16GB DDR5 RAM, and 512GB SSD — built for high-end gaming performance.</p>
+      <a href="https://nowpayments.io/payment/?iid=5763679990" target="_blank" class="pay-button">
+        <img src="https://nowpayments.io/images/embeds/payment-button-black.svg" alt="Crypto payment button by NOWPayments">
       </a>
     </div>
-  </div>
 
-  <div class="product">
-    <a href="https://www.newegg.com/p/3D5-006G-00042?Item=9SIC01CKMH7710" target="_blank">
-      <img src="https://c1.neweggimages.com/productimage/nb300/3D5-006G-00042-01.jpg" alt="Gaming PC Tower" />
-    </a>
-    <h2>Gaming PC Tower</h2>
-    <p>AMD Ryzen 7, RTX 4060, 16GB RAM, 1TB SSD — <strong>$1100</strong></p>
-    <p>Powerful pre-built gaming PC ready for any task. Ships directly from Newegg.</p>
-    <div class="buy-button">
-      <a href="https://nowpayments.io/payment/?iid=5073979985&source=button" target="_blank" rel="noreferrer noopener">
-        <img src="https://nowpayments.io/images/embeds/payment-button-black.svg" alt="Pay with Crypto">
+    <div class="product-card">
+      <a href="skytech.html">
+        <img src="https://c1.neweggimages.com/ProductImageCompressAll1280/83-101-645-V07.jpg" alt="Skytech Shadow Gaming PC">
+        <h2>Skytech Shadow Gaming PC</h2>
+      </a>
+      <p><strong>Price:</strong> $1100</p>
+      <p>Ryzen 5 5600, RTX 3060, 16GB DDR4 RAM, and 1TB NVMe SSD — next-gen gaming ready.</p>
+      <a href="https://nowpayments.io/payment/?iid=5073979985" target="_blank" class="pay-button">
+        <img src="https://nowpayments.io/images/embeds/payment-button-black.svg" alt="Crypto payment button by NOWPayments">
       </a>
     </div>
-  </div>
-
-  <footer>© 2025 Odrop | Powered by NOWPayments</footer>
+  </main>
 </body>
 </html>
