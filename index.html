@@ -1,3 +1,86 @@
+<!-- 🌐 Universal Navbar -->
+<nav class="flex justify-between items-center px-6 py-4 bg-gray-900 text-white shadow-md">
+  <a href="index.html" class="text-2xl font-bold hover:text-blue-400 transition">Odrop</a>
+
+  <div class="flex items-center space-x-6">
+    <a href="index.html" class="hover:text-blue-400">Home</a>
+    <a href="marketplace.html" class="hover:text-blue-400">Marketplace</a>
+    <a href="cart.html" id="cart-link" class="hover:text-blue-400 flex items-center">
+      🛒<span id="cart-count" class="ml-1 text-sm bg-red-600 px-2 py-0.5 rounded-full hidden">0</span>
+    </a>
+    <a href="profile.html" class="hover:text-blue-400">Profile</a>
+
+    <!-- Notifications -->
+    <div id="notification-bell" class="relative cursor-pointer">
+      🔔
+      <span id="notif-count" class="absolute -top-2 -right-2 bg-red-600 text-xs rounded-full px-1 hidden">0</span>
+      <div id="notif-panel" class="hidden absolute right-0 mt-3 w-64 bg-gray-800 text-white rounded-lg shadow-lg p-3">
+        <p class="text-sm text-gray-400 mb-2">Notifications</p>
+        <div id="notif-list" class="space-y-2 text-sm"></div>
+      </div>
+    </div>
+
+    <!-- Theme Switch -->
+    <button id="theme-toggle" class="bg-gray-700 px-3 py-1 rounded-md hover:bg-gray-600 transition">
+      🌙
+    </button>
+  </div>
+</nav>
+
+<script>
+  // 🌙 Theme Toggle
+  const themeToggle = document.getElementById("theme-toggle");
+  const html = document.documentElement;
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme === "light") html.classList.remove("dark");
+  else html.classList.add("dark");
+
+  themeToggle.textContent = html.classList.contains("dark") ? "🌙" : "☀️";
+
+  themeToggle.addEventListener("click", () => {
+    html.classList.toggle("dark");
+    const newTheme = html.classList.contains("dark") ? "dark" : "light";
+    localStorage.setItem("theme", newTheme);
+    themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
+  });
+
+  // 🛒 Cart Count (demo)
+  const cartCount = document.getElementById("cart-count");
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  if (cart.length > 0) {
+    cartCount.textContent = cart.length;
+    cartCount.classList.remove("hidden");
+  }
+
+  // 🔔 Notification system (local demo)
+  const notifBell = document.getElementById("notification-bell");
+  const notifPanel = document.getElementById("notif-panel");
+  const notifList = document.getElementById("notif-list");
+  const notifCount = document.getElementById("notif-count");
+
+  let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+
+  function renderNotifications() {
+    notifList.innerHTML = notifications.length
+      ? notifications.map(n => `<div class="bg-gray-700 p-2 rounded">${n}</div>`).join("")
+      : `<p class="text-gray-500">No new notifications</p>`;
+    notifCount.textContent = notifications.length;
+    notifCount.classList.toggle("hidden", notifications.length === 0);
+  }
+
+  notifBell.addEventListener("click", () => {
+    notifPanel.classList.toggle("hidden");
+  });
+
+  renderNotifications();
+
+  // Example: Add a fake notification (for testing)
+  // notifications.push("Someone wants to buy your product!");
+  // localStorage.setItem("notifications", JSON.stringify(notifications));
+  // renderNotifications();
+
+</script>
 <!doctype html>
 <html lang="en">
 <head>
