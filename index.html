@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Odrop | Tech. Gaming. Smart Deals.</title>
-  <link rel="icon" type="image/png" href="Drop.png">
+  <title>MSI Cyborg 15 | Odrop</title>
+  <link rel="icon" type="image/png" href="../Drop.png">
   <style>
     :root {
       --bg-color: #f5f7fa;
@@ -24,7 +24,7 @@
       font-family: "Poppins", sans-serif;
       background-color: var(--bg-color);
       color: var(--text-color);
-      transition: background 0.3s, color 0.3s;
+      transition: 0.3s;
     }
 
     header {
@@ -58,19 +58,31 @@
       text-decoration: underline;
     }
 
-    .cart {
-      cursor: pointer;
-      font-size: 1.5rem;
-    }
-
-    .container {
+    .product-container {
       max-width: 900px;
-      margin: 4rem auto;
-      text-align: center;
+      margin: 3rem auto;
       background: var(--card-bg);
       padding: 2rem;
       border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .product-container img {
+      max-width: 80%;
+      border-radius: 15px;
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+
+    .product-container img:hover {
+      transform: scale(1.02);
+    }
+
+    .price {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #007BFF;
     }
 
     .description {
@@ -79,29 +91,8 @@
       line-height: 1.6;
     }
 
-    .toggle-switch {
-      background: #ccc;
-      border-radius: 15px;
-      width: 45px;
-      height: 25px;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .toggle-circle {
-      background: white;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      position: absolute;
-      top: 2.5px;
-      left: 3px;
-      transition: 0.3s;
-    }
-
-    [data-theme="dark"] .toggle-circle {
-      left: 22px;
-      background: #ffcd00;
+    .nowpayments {
+      margin-top: 2rem;
     }
 
     footer {
@@ -115,38 +106,33 @@
 <body>
   <header>
     <div class="logo">
-      <img src="Drop.png" alt="Odrop Logo">
+      <img src="../Drop.png" alt="Odrop Logo">
       <strong>Odrop</strong>
     </div>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="products/msi.html">Products</a>
-      <span class="cart">🛒</span>
-      <div class="toggle-switch" id="theme-toggle">
-        <div class="toggle-circle"></div>
-      </div>
+      <a href="../index.html">Home</a>
+      <a href="msi.html">Products</a>
     </nav>
   </header>
 
   <main>
-    <div class="container">
-      <h1>Welcome to Odrop</h1>
+    <div class="product-container">
+      <img src="../images/msi-cyborg15.png" alt="MSI Cyborg 15 Gaming Laptop">
+
+      <h1>MSI Cyborg 15 Gaming Laptop</h1>
+      <p class="price">$1000</p>
       <p class="description">
-        Discover powerful gaming laptops and PCs at unbeatable prices — all with secure crypto payments via NOWPayments.
+        Intel Core i7-13620H, RTX 4050 GPU, 16GB DDR5 RAM, and 512GB SSD — built for high-end gaming performance.
       </p>
-      <a href="products/msi.html" style="text-decoration:none; color: #007BFF; font-weight:600;">Shop Now →</a>
+
+      <div class="nowpayments">
+        <img src="../images/nowpayments-button.png" alt="Pay with NOWPayments" width="200">
+      </div>
     </div>
   </main>
 
   <footer>
     © 2025 Odrop | Powered by NOWPayments
   </footer>
-
-  <script>
-    const toggle = document.getElementById("theme-toggle");
-    toggle.addEventListener("click", () => {
-      document.body.dataset.theme = document.body.dataset.theme === "dark" ? "" : "dark";
-    });
-  </script>
 </body>
 </html>
