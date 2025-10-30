@@ -1,49 +1,110 @@
-<!doctype html>
-<html><head>
-<meta charset="utf-8"><title>Admin — Odrop</title>
-<link rel="stylesheet" href="style.css">
-<script src="main.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js" defer></script>
-<script>
-const ADMIN_EMAILJS_SERVICE = 'service_8pofbon';
-const ADMIN_TEMPLATE_APPROVE = 'template_listing_approved'; // <-- create and replace
-document.addEventListener('DOMContentLoaded', ()=> {
-  emailjs.init('mqnVOPu2ysfQu72il');
-  const all = odrop.getAllListings();
-  const container = document.getElementById('listings');
-  if(!all.length) container.textContent = 'No listings';
-  all.forEach(l => {
-    const el = document.createElement('div');
-    el.className = 'listing-card';
-    el.innerHTML = `<h3>${l.title} ${l.approved ? '(approved)':''}</h3>
-      <p>${l.description}</p>
-      <p>Price: ${l.price} ${l.currency}</p>
-      <p>Owner: ${l.owner} <small>(${l.reply_to||''})</small></p>
-      <button data-id="${l.id}" ${l.approved ? 'disabled':''}>Approve</button>`;
-    container.appendChild(el);
-    el.querySelector('button').addEventListener('click', async (e)=>{
-      const id = e.target.dataset.id;
-      odrop.approveListing(id);
-      e.target.disabled = true;
-      // notify seller via EmailJS
-      const listing = odrop.getAllListings().find(x=>x.id===id);
-      try {
-        await emailjs.send(ADMIN_EMAILJS_SERVICE, ADMIN_TEMPLATE_APPROVE, {
-          to_email: listing.reply_to,
-          listing_title: listing.title,
-          seller: listing.owner
-        });
-        alert('Approved and email sent');
-      } catch(err) { alert('Approved but email failed'); }
-    });
-  });
-});
-</script>
-</head>
-<body>
-  <main style="max-width:900px;margin:50px auto">
-    <h1>Admin - Listings</h1>
-    <div id="listings"></div>
-  </main>
-</body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | ODROP</title>
 
+<link rel="stylesheet" href="fade.css">
+<script src="fade.js" defer></script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #0b0b0b;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 600px;
+  margin: 80px auto;
+  text-align: center;
+  background: #111;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+input {
+  width: 80%;
+  padding: 12px;
+  margin: 12px 0;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+}
+
+button {
+  padding: 12px 20px;
+  background: #7f5bff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  color: white;
+  transition: 0.3s;
+}
+button:hover { background: #6b4ae3; }
+
+.hidden { display: none; }
+.listing-card {
+  background: #1a1a1a;
+  margin: 12px 0;
+  padding: 12px;
+  border-radius: 8px;
+}
+</style>
+</head>
+
+<body class="fade">
+
+<div id="loginScreen" class="container fade">
+  <h2>Admin Login</h2>
+  <input type="password" id="adminPass" placeholder="Enter Admin Password">
+  <button onclick="checkAdminPass()">Login</button>
+  <p id="errorMsg" style="color:red;margin-top:10px;"></p>
+</div>
+
+<div id="dash" class="container hidden fade">
+  <h2>Admin Dashboard</h2>
+  <p>View all listings below:</p>
+  <div id="listingContainer"></div>
+</div>
+
+<script>
+// CHANGE ADMIN PASSWORD HERE
+const ADMIN_PASSWORD = "odropBoss2025";
+
+function checkAdminPass() {
+  const pass = document.getElementById("adminPass").value;
+  if (pass === ADMIN_PASSWORD) {
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("dash").classList.remove("hidden");
+    loadListings();
+  } else {
+    document.getElementById("errorMsg").textContent = "Wrong password.";
+  }
+}
+
+function loadListings() {
+  const listings = JSON.parse(localStorage.getItem("listings")) || [];
+  const container = document.getElementById("listingContainer");
+
+  if (listings.length === 0) {
+    container.innerHTML = "<p>No listings available.</p>";
+    return;
+  }
+
+  container.innerHTML = listings.map(l => `
+    <div class="listing-card">
+      <strong>${l.title}</strong><br>
+      Price: ${l.price}<br>
+      Seller: ${l.seller}
+    </div>
+  `).join("");
+}
+</script>
+
+</body>
+</html>
