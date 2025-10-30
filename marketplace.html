@@ -1,53 +1,68 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Marketplace - Odrop</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marketplace — Odrop</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" href="images/Drop.png" />
+  <script>
+    tailwind.config = { darkMode: 'class' };
+  </script>
 </head>
-<body class="bg-slate-50 text-slate-900">
-  <div class="max-w-6xl mx-auto p-6">
-    <a href="index.html" class="inline-block mb-6 text-slate-600 hover:text-sky-600">&larr; Home</a>
 
-    <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-semibold">Marketplace</h1>
-      <div class="flex gap-2">
-        <input id="search" placeholder="Search title..." class="px-4 py-2 border rounded" />
-        <select id="filter-coin" class="px-3 py-2 border rounded">
-          <option value="">All coins</option>
-          <option value="BTC">BTC</option>
-          <option value="ETH">ETH</option>
-          <option value="XRP">XRP</option>
-          <option value="USDC">USDC</option>
-          <option value="PLS">PLS</option>
-        </select>
-      </div>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col">
+  <!-- Navbar -->
+  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center shadow-md">
+    <a href="index.html" class="text-2xl font-bold text-white">Odrop</a>
+    <div class="flex items-center space-x-6">
+      <a href="index.html" class="hover:text-blue-400">Home</a>
+      <a href="marketplace.html" class="hover:text-blue-400 font-bold text-blue-400">Marketplace</a>
+      <a href="sell.html" class="hover:text-blue-400">Sell</a>
+      <a href="profile.html" class="hover:text-blue-400">Profile</a>
+      <button id="themeToggle" class="text-xl">🌙</button>
     </div>
+  </nav>
 
-    <div id="listings" class="grid md:grid-cols-3 gap-6"></div>
-  </div>
+  <!-- Marketplace Section -->
+  <main class="flex-1 px-6 py-10">
+    <h1 class="text-3xl font-bold mb-6">Marketplace Listings</h1>
+    <div id="listingsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </main>
 
-  <!-- product modal -->
-  <div id="product-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-2xl p-6 w-full max-w-2xl">
-      <div class="flex gap-4">
-        <img id="modal-img" src="" class="w-48 h-48 object-cover rounded-lg" alt="product" />
-        <div>
-          <h2 id="modal-title" class="text-xl font-semibold"></h2>
-          <p id="modal-desc" class="text-slate-600 mt-2"></p>
-          <p class="mt-4"><strong>Accepted:</strong> <span id="modal-coin"></span></p>
-          <div class="mt-6 flex gap-3">
-            <button id="modal-buy" class="px-4 py-2 bg-sky-600 text-white rounded">Buy (mock)</button>
-            <button id="modal-close" class="px-4 py-2 border rounded">Close</button>
-          </div>
+  <footer class="bg-gray-900 text-white text-center py-4">
+    <p class="text-sm">&copy; 2025 Odrop Marketplace</p>
+  </footer>
+
+  <script>
+    // Dark Mode
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      themeToggle.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    });
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+      themeToggle.textContent = '☀️';
+    }
+
+    // Load Listings
+    const listingsContainer = document.getElementById('listingsContainer');
+    const listings = JSON.parse(localStorage.getItem('marketListings') || '[]');
+
+    if (listings.length === 0) {
+      listingsContainer.innerHTML = `<p class="text-gray-500 dark:text-gray-400">No listings yet. <a href='sell.html' class='text-blue-500 underline'>List one!</a></p>`;
+    } else {
+      listingsContainer.innerHTML = listings.map(item => `
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
+          <p class="text-gray-600 dark:text-gray-300 mb-2">${item.description}</p>
+          <p class="font-bold mb-2">${item.price} ${item.currency}</p>
+          <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">Buy Now</button>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="script.js" defer></script>
+      `).join('');
+    }
+  </script>
 </body>
 </html>
-
