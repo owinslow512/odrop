@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Support — Odrop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="fade.css"/>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+  <header class="bg-gray-900 text-white p-4">
+    <div class="max-w-6xl mx-auto flex items-center justify-between"><a href="index.html" class="text-xl font-bold">Odrop</a></div>
+  </header>
+  <main class="max-w-2xl mx-auto p-8" data-stagger>
+    <h1 class="text-3xl font-bold mb-4">Support</h1>
+    <form id="supportForm" class="bg-white dark:bg-gray-800 p-6 rounded shadow">
+      <label class="block mb-3">
+        <div class="text-sm">Full name</div>
+        <input name="fullname" class="w-full p-3 border rounded" required />
+      </label>
+      <label class="block mb-3">
+        <div class="text-sm">Email</div>
+        <input name="email" class="w-full p-3 border rounded" required />
+      </label>
+      <label class="block mb-3">
+        <div class="text-sm">Phone (optional)</div>
+        <input name="phone" class="w-full p-3 border rounded" />
+      </label>
+      <label class="block mb-3">
+        <div class="text-sm">Reason</div>
+        <select name="reason" class="w-full p-3 border rounded">
+          <option>General</option><option>Scam report</option><option>Listing review</option><option>Other</option>
+        </select>
+      </label>
+      <label class="block mb-3">
+        <div class="text-sm">Details</div>
+        <textarea name="details" class="w-full p-3 border rounded h-28"></textarea>
+      </label>
+      <button class="px-4 py-2 bg-blue-600 text-white rounded">Send Request</button>
+    </form>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script src="fade.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/support.js"></script>
+  <script> odrop.initThemeButton('themeBtn'); emailjs && emailjs.init('mqnVOPu2ysfQu72il'); </script>
+</body>
+</html>
