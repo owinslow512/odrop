@@ -1,74 +1,11 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Profile — Odrop</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="fade.css"/>
-</head>
-<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
-  <header class="bg-gray-900 text-white p-4">
-    <div class="max-w-6xl mx-auto flex items-center justify-between">
-      <a href="index.html" class="text-xl font-bold">Odrop</a>
-      <div class="flex items-center space-x-4">
-        <a href="marketplace.html" class="navlink">Marketplace</a>
-        <a href="sell.html" class="navlink">Sell</a>
-        <button id="themeBtn" class="p-2"></button>
-      </div>
-    </div>
-  </header>
+<div class="profile-card">
+  <img id="profilePic" class="profile-pic" src="assets/default-pfp.png" alt="Profile Picture">
+  <h2 id="usernameDisplay">Guest</h2>
+  <p id="statusText">Not signed in</p>
 
-  <img id="profileAvatar" src="" style="width:150px;height:150px;border-radius:50%">
-<input id="avatarFile" type="file" accept="image/*">
-<input id="profileUsername" placeholder="Username">
-<button id="saveUsernameBtn">Save Username</button>
+  <input type="file" id="avatarInput" accept="image/*">
+  <input type="text" id="usernameInput" placeholder="Change username...">
 
-<script>
-function updateUI(){
-  const p = readProfile();
-  document.getElementById('profileAvatar').src = p.avatar || 'images/default-avatar.png';
-  document.getElementById('profileUsername').value = p.username || '';
-}
-document.getElementById('avatarFile').addEventListener('change', async (e)=> {
-  const data = await setAvatarFromInput(e.target);
-  document.getElementById('profileAvatar').src = data;
-});
-document.getElementById('saveUsernameBtn').addEventListener('click', ()=> {
-  try {
-    saveUsername(document.getElementById('profileUsername').value.trim());
-    alert('Username updated');
-    updateUI();
-  } catch(e) { alert(e.message); }
-});
-updateUI();
-</script>
-
-
-  <main class="max-w-md mx-auto p-8" data-stagger>
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
-      <img id="avatarImg" src="Drop.png" alt="avatar" class="w-28 h-28 rounded-full mx-auto mb-3 object-cover border" />
-      <div id="profileName" class="text-xl font-semibold">Guest</div>
-      <div id="profileEmail" class="text-sm text-gray-500 mb-4">Not signed in</div>
-
-      <div class="mb-3">
-        <input id="avatarInput" type="file" accept="image/*" class="w-full" />
-      </div>
-
-      <div class="mb-3">
-        <input id="usernameField" class="w-full p-3 border rounded" placeholder="Change username..." />
-      </div>
-      <button id="saveUsernameBtn" class="w-full bg-blue-600 text-white py-2 rounded">Save Username</button>
-      <div class="mt-4">
-        <a href="logout.html" class="text-red-500">Logout</a>
-      </div>
-    </div>
-  </main>
-
-  <script src="fade.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/profile.js"></script>
-  <script>
-    odrop.initThemeButton('themeBtn');
-  </script>
-</body>
-</html>
+  <button id="saveUsernameBtn">Save Username</button>
+  <button id="logoutBtn" class="logout-btn">Logout</button>
+</div>
