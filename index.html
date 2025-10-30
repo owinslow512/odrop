@@ -1,81 +1,134 @@
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white transition">
-  <!-- 🌐 Universal Navbar -->
-  <nav class="flex justify-between items-center px-6 py-4 bg-gray-900 text-white shadow-md">
-    <a href="index.html" class="text-2xl font-bold hover:text-blue-400 transition">Odrop</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Odrop Marketplace</title>
+
+  <!-- ✅ Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3B82F6',
+          },
+        },
+      },
+    };
+  </script>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col">
+  <!-- ✅ Navbar -->
+  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center shadow-md">
+    <div class="flex items-center space-x-3">
+      <a href="index.html" class="text-2xl font-bold text-white">Odrop</a>
+    </div>
 
     <div class="flex items-center space-x-6">
       <a href="index.html" class="hover:text-blue-400">Home</a>
       <a href="marketplace.html" class="hover:text-blue-400">Marketplace</a>
+      <a href="sell.html" class="hover:text-blue-400">Sell</a>
       <a href="profile.html" class="hover:text-blue-400">Profile</a>
 
-      <!-- Cart -->
-      <a href="cart.html" id="cart-link" class="hover:text-blue-400 flex items-center">
-        🛒<span id="cart-count" class="ml-1 text-sm bg-red-600 px-2 py-0.5 rounded-full hidden">0</span>
-      </a>
-
-      <!-- Notifications -->
-      <div id="notification-bell" class="relative cursor-pointer">
-        🔔
-        <span id="notif-count" class="absolute -top-2 -right-2 bg-red-600 text-xs rounded-full px-1 hidden">0</span>
-        <div id="notif-panel" class="hidden absolute right-0 mt-3 w-64 bg-gray-800 text-white rounded-lg shadow-lg p-3">
-          <p class="text-sm text-gray-400 mb-2">Notifications</p>
-          <div id="notif-list" class="space-y-2 text-sm"></div>
-        </div>
-      </div>
-
-      <!-- Theme Switch -->
-      <button id="theme-toggle" class="bg-gray-700 px-3 py-1 rounded-md hover:bg-gray-600 transition">
-        🌙
+      <!-- 🔔 Notification Bell -->
+      <button id="notifyBtn" class="relative focus:outline-none">
+        <span class="text-xl">🔔</span>
+        <span id="notificationDot" class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full hidden"></span>
       </button>
+
+      <!-- 🛒 Cart -->
+      <button id="cartBtn" class="relative">
+        <span class="text-xl">🛒</span>
+        <span id="cartCount" class="absolute -top-2 -right-2 bg-blue-500 text-xs px-1 rounded-full">0</span>
+      </button>
+
+      <!-- 🌙 Dark/Light Toggle -->
+      <button id="themeToggle" class="text-xl">🌙</button>
     </div>
   </nav>
 
-  <!-- 🧠 Navbar Logic -->
+  <!-- ✅ Hero Section -->
+  <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-16">
+    <h1 class="text-4xl font-extrabold mb-4">Odrop Marketplace — Crypto-first, Community-driven</h1>
+    <p class="max-w-2xl mb-8 text-lg text-gray-700 dark:text-gray-300">
+      Buy and sell items using crypto (BTC, ETH, XRP, USDC, PLS). Secure listings, profile system, and mock checkout for testing.
+    </p>
+
+    <div class="flex space-x-4">
+      <a href="marketplace.html" class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md">Browse Listings</a>
+      <a href="sell.html" class="bg-white dark:bg-gray-800 text-blue-500 border border-blue-500 hover:bg-blue-100 dark:hover:bg-gray-700 px-5 py-2 rounded-lg shadow-md">Start Selling</a>
+    </div>
+  </main>
+
+  <!-- ✅ Trusted Suppliers -->
+  <section class="px-6 py-12">
+    <div class="max-w-4xl mx-auto bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-2xl p-6 shadow-lg">
+      <h2 class="text-2xl font-semibold mb-2">Trusted Suppliers</h2>
+      <p class="text-gray-100">
+        We recommend verified merchants and crypto-friendly suppliers for dropshipping.
+        Sellers must add tracking for all releases.
+      </p>
+    </div>
+  </section>
+
+  <!-- ✅ Footer -->
+  <footer class="bg-gray-900 text-white text-center py-4">
+    <p class="text-sm">&copy; 2025 Odrop Marketplace. All rights reserved.</p>
+  </footer>
+
+  <!-- ✅ JavaScript -->
   <script>
-    // 🌙 Theme Toggle
-    const themeToggle = document.getElementById("theme-toggle");
-    const html = document.documentElement;
-    const savedTheme = localStorage.getItem("theme");
-
-    if (savedTheme === "light") html.classList.remove("dark");
-    else html.classList.add("dark");
-
-    themeToggle.textContent = html.classList.contains("dark") ? "🌙" : "☀️";
-
-    themeToggle.addEventListener("click", () => {
-      html.classList.toggle("dark");
-      const newTheme = html.classList.contains("dark") ? "dark" : "light";
-      localStorage.setItem("theme", newTheme);
-      themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
+    // 🔄 Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      themeToggle.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     });
 
-    // 🛒 Cart Count
-    const cartCount = document.getElementById("cart-count");
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    if (cart.length > 0) {
-      cartCount.textContent = cart.length;
-      cartCount.classList.remove("hidden");
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+      themeToggle.textContent = '☀️';
     }
+
+    // 🛒 Mock Cart
+    const cartBtn = document.getElementById('cartBtn');
+    const cartCount = document.getElementById('cartCount');
+    let cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    cartCount.textContent = cartItems.length;
+
+    cartBtn.addEventListener('click', () => {
+      alert(`You have ${cartItems.length} item(s) in your cart.`);
+    });
 
     // 🔔 Notifications
-    const notifBell = document.getElementById("notification-bell");
-    const notifPanel = document.getElementById("notif-panel");
-    const notifList = document.getElementById("notif-list");
-    const notifCount = document.getElementById("notif-count");
+    const notifyBtn = document.getElementById('notifyBtn');
+    const notificationDot = document.getElementById('notificationDot');
+    let notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
 
-    let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+    if (notifications.length > 0) notificationDot.classList.remove('hidden');
 
-    function renderNotifications() {
-      notifList.innerHTML = notifications.length
-        ? notifications.map(n => `<div class='bg-gray-700 p-2 rounded'>${n}</div>`).join("")
-        : `<p class='text-gray-500'>No new notifications</p>`;
-      notifCount.textContent = notifications.length;
-      notifCount.classList.toggle("hidden", notifications.length === 0);
-    }
-
-    notifBell.addEventListener("click", () => {
-      notifPanel.classList.toggle("hidden");
+    notifyBtn.addEventListener('click', () => {
+      alert(notifications.length ? notifications.join("\\n") : "No new notifications.");
+      notifications = [];
+      notificationDot.classList.add('hidden');
+      localStorage.setItem('notifications', JSON.stringify([]));
     });
 
-    renderNotifications();
+    // 🧭 Redirect if not logged in
+    const user = localStorage.getItem('loggedInUser');
+    document.querySelectorAll('a[href="profile.html"]').forEach(link => {
+      link.addEventListener('click', e => {
+        if (!user) {
+          e.preventDefault();
+          window.location.href = 'login.html';
+        }
+      });
+    });
   </script>
+</body>
+</html>
