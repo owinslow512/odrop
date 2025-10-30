@@ -1,52 +1,36 @@
-// support.js
-import { getAuth } from "firebase/auth";
+// js/support.js
+document.addEventListener('DOMContentLoaded', () => {
+  if(window.emailjs) emailjs.init('mqnVOPu2ysfQu72il'); // public key
+  const SERVICE = 'service_8pofbon';
+  const TEMPLATE = 'template_o4sdsjm';
 
-// ✅ EmailJS credentials
-const EMAILJS_SERVICE_ID = "service_8pofbon";
-const EMAILJS_TEMPLATE_SUPPORT_ID = "template_o4sdsjm";
-const EMAILJS_PUBLIC_KEY = "mqnVOPu2ysfQu72il";
-
-document.addEventListener("DOMContentLoaded", () => {
-  const supportForm = document.getElementById("supportForm");
-
-  if (!supportForm) return;
-
-  supportForm.addEventListener("submit", async (e) => {
+  const form = document.getElementById('supportForm');
+  if(!form) return;
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const name = form.querySelector('[name=fullname]').value.trim();
+    const email = form.querySelector('[name=email]').value.trim();
+    const phone = form.querySelector('[name=phone]').value.trim();
+    const reason = form.querySelector('[name=reason]').value;
+    const details = form.querySelector('[name=details]').value.trim();
 
-    const auth = getAuth();
-    const user = auth.currentUser;
+    if(!name || !email) return alert('Name & email required.');
 
-    const name = document.getElementById("supportName").value;
-    const email = document.getElementById("supportEmail").value;
-    const phone = document.getElementById("supportPhone").value;
-    const reason = document.getElementById("supportReason").value;
-    const message = document.getElementById("supportMessage").value;
+    const payload = {
+      from_name: name,
+      user_email: email,
+      phone: phone,
+      reason: reason,
+      message: details
+    };
 
-    try {
-      const emailData = {
-        from_name: name,
-        from_email: email,
-        phone_number: phone || "Not provided",
-        reason_for_help: reason,
-        message,
-        user_email: user ? user.email : "Guest",
-      };
-
-      // ✅ Send support email
-      const response = await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_SUPPORT_ID,
-        emailData,
-        EMAILJS_PUBLIC_KEY
-      );
-
-      console.log("Support email sent:", response);
-      alert("Your support request has been sent!");
-      supportForm.reset();
-    } catch (error) {
-      console.error("Error sending support email:", error);
-      alert("Error submitting support request. Please try again.");
+    try{
+      await emailjs.send(SERVICE, TEMPLATE, payload);
+      alert('Support request sent — check your email for a reply.');
+      form.reset();
+    }catch(err){
+      console.error(err);
+      alert('Error sending support request. Try again later.');
     }
   });
 });
