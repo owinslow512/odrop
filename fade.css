@@ -1,4 +1,4 @@
-/* fade.css — handles global fade in/out transitions */
+/* fade.css — smooth fade in/out transitions for every page */
 body {
   opacity: 0;
   transition: opacity 0.4s ease-in-out;
@@ -10,4 +10,19 @@ body.fade-in {
 
 body.fade-out {
   opacity: 0;
+}
+
+/* Optional smooth slide effect for main content */
+main, section, form, .container {
+  transform: translateY(10px);
+  opacity: 0;
+  transition: all 0.6s ease-in-out;
+}
+
+body.fade-in main,
+body.fade-in section,
+body.fade-in form,
+body.fade-in .container {
+  transform: translateY(0);
+  opacity: 1;
 }
