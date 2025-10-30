@@ -1,96 +1,71 @@
-// js/sell.js
-// Requires: emailjs (CDN), main.js (odrop)
-document.addEventListener('DOMContentLoaded', () => {
-  if(typeof emailjs === 'undefined') {
-    console.warn('EmailJS not loaded. Listing review email will fail.');
-  }
-  const EMAILJS_SERVICE_ID = "service_8pofbon";
-  const EMAILJS_TEMPLATE_LISTING_ID = "template_ed7sx4o";
-  const EMAILJS_PUBLIC_KEY = "mqnVOPu2ysfQu72il";
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Sell — Odrop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="fade.css"/>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+  <header class="bg-gray-900 text-white p-4">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="text-xl font-bold">Odrop</a>
+      <div class="flex items-center space-x-4">
+        <a href="marketplace.html" class="navlink">Marketplace</a>
+        <a href="profile.html" class="navlink">Profile</a>
+        <button id="themeBtn" class="p-2"></button>
+        <a id="cartLink" href="cart.html">Cart (<span id="cartCount">0</span>)</a>
+      </div>
+    </div>
+  </header>
 
-  // init emailjs if available
-  if(window.emailjs) emailjs.init(EMAILJS_PUBLIC_KEY);
+  <main class="max-w-4xl mx-auto p-8" data-stagger>
+    <h1 class="text-3xl font-bold mb-6">Sell an Item</h1>
 
-  const form = document.getElementById('sellForm');
-  if(!form) return;
+    <form id="sellForm" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+      <div class="grid grid-cols-1 gap-4">
+        <label class="block">
+          <div class="text-sm font-medium mb-1">Title</div>
+          <input name="title" class="w-full p-3 border rounded" placeholder="Item title" required />
+        </label>
 
-  // image inputs
-  const fileInput = document.getElementById('listingImages');
-  const previewArea = document.getElementById('imagePreview');
+        <label class="block">
+          <div class="text-sm font-medium mb-1">Description <span class="text-xs text-gray-500">(min 50 chars)</span></div>
+          <textarea name="description" id="listingDescription" class="w-full p-3 border rounded h-28" placeholder="Describe your item" required></textarea>
+        </label>
 
-  fileInput && fileInput.addEventListener('change', (ev) => {
-    previewArea.innerHTML = '';
-    const files = Array.from(ev.target.files).slice(0,6);
-    files.forEach(file => {
-      const reader = new FileReader();
-      const el = document.createElement('div');
-      el.className = 'w-32 h-20 rounded overflow-hidden border';
-      el.innerHTML = '<div class="skeleton w-full h-full"></div>';
-      previewArea.appendChild(el);
-      reader.onload = (e) => {
-        el.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`;
-      };
-      reader.readAsDataURL(file);
-    });
-  });
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <label>
+            <div class="text-sm mb-1">Price</div>
+            <input name="price" class="w-full p-3 border rounded" placeholder="Amount" required />
+          </label>
+          <label>
+            <div class="text-sm mb-1">Crypto</div>
+            <select name="crypto" id="listingCrypto" class="w-full p-3 border rounded">
+              <option>BTC</option><option>ETH</option><option>XRP</option><option>USDC</option><option>PLS</option>
+            </select>
+          </label>
+          <label>
+            <div class="text-sm mb-1">Images</div>
+            <input id="listingImages" type="file" accept="image/*" multiple class="w-full" />
+          </label>
+        </div>
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const title = form.querySelector('[name=title]').value.trim();
-    const desc = form.querySelector('[name=description]').value.trim();
-    const price = form.querySelector('[name=price]').value.trim();
-    const crypto = form.querySelector('[name=crypto]').value;
+        <div id="imagePreview" class="flex gap-2 mt-2"></div>
 
-    if(title.length < 3) return alert('Title too short');
-    if(desc.length < 50) return alert('Description must be at least 50 characters.');
-    if(!price || isNaN(price)) return alert('Enter a numeric price.');
+        <div class="pt-2">
+          <button type="submit" class="px-5 py-2 bg-blue-600 text-white rounded">Submit Listing</button>
+        </div>
+      </div>
+    </form>
+  </main>
 
-    // read images
-    const images = [];
-    const files = Array.from(fileInput.files || []);
-    for(let f of files.slice(0,6)){
-      const b64 = await toBase64(f);
-      images.push({name: f.name, data: b64});
-    }
-
-    const listing = {
-      id: odrop.uid('listing'),
-      title, description: desc, price, currency: crypto, images,
-      approved: false, created_at: Date.now()
-    };
-    // save locally
-    odrop.addListing(listing);
-
-    // send review email (so you can approve)
-    if(window.emailjs){
-      try{
-        const emailData = {
-          from_name: 'Odrop Listing',
-          listing_title: title,
-          listing_description: desc,
-          listing_price: price,
-          listing_crypto: crypto,
-          reply_to: 'noreply@odrop',
-          listing_id: listing.id,
-          listing_preview: images[0] ? images[0].data : ''
-        };
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_LISTING_ID, emailData, EMAILJS_PUBLIC_KEY);
-        alert('Listing submitted for review — emailed to admin.');
-        form.reset(); previewArea.innerHTML = '';
-      }catch(err){
-        console.error(err);
-        alert('Listing saved, but failed to send review email. Check console.');
-      }
-    } else {
-      alert('Listing saved locally. EmailJS not loaded.');
-      form.reset(); previewArea.innerHTML = '';
-    }
-  });
-
-  function toBase64(file){ return new Promise((res,rej)=>{
-    const r = new FileReader();
-    r.onload = ()=> res(r.result);
-    r.onerror = ()=> rej();
-    r.readAsDataURL(file);
-  }); }
-});
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script src="fade.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/sell.js"></script>
+  <script>
+    odrop.initThemeButton('themeBtn');
+  </script>
+</body>
+</html>
