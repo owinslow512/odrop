@@ -1,65 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Marketplace — Odrop</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { darkMode: 'class' };
-  </script>
+  <script> tailwind.config = { darkMode: 'class' } </script>
 </head>
-
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col">
-  <!-- Navbar -->
-  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center shadow-md">
-    <a href="index.html" class="text-2xl font-bold text-white">Odrop</a>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center">
+    <div class="text-2xl font-bold cursor-pointer" onclick="goHome()">Odrop</div>
     <div class="flex items-center space-x-6">
-      <a href="index.html" class="hover:text-blue-400">Home</a>
-      <a href="marketplace.html" class="hover:text-blue-400 font-bold text-blue-400">Marketplace</a>
-      <a href="sell.html" class="hover:text-blue-400">Sell</a>
-      <a href="profile.html" class="hover:text-blue-400">Profile</a>
-      <button id="themeToggle" class="text-xl">🌙</button>
+      <button onclick="goSell()" class="hover:text-blue-300">Sell</button>
+      <button onclick="goProfile()" class="hover:text-blue-300">Profile</button>
+      <button onclick="goSupport()" class="hover:text-blue-300">Support</button>
+      <button onclick="goSettings()" class="hover:text-blue-300">Settings</button>
+      <button id="themeBtn" class="text-xl"></button>
     </div>
   </nav>
 
-  <!-- Marketplace Section -->
-  <main class="flex-1 px-6 py-10">
-    <h1 class="text-3xl font-bold mb-6">Marketplace Listings</h1>
-    <div id="listingsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  <main class="p-6 max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6">Marketplace</h1>
+    <div id="grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
   </main>
 
-  <footer class="bg-gray-900 text-white text-center py-4">
-    <p class="text-sm">&copy; 2025 Odrop Marketplace</p>
-  </footer>
-
+  <script src="main.js"></script>
   <script>
-    // Dark Mode
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      themeToggle.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
-      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-    });
-    if (localStorage.getItem('theme') === 'dark') {
-      document.documentElement.classList.add('dark');
-      themeToggle.textContent = '☀️';
-    }
+    odrop.initThemeButton("themeBtn");
+    const grid = document.getElementById("grid");
+    const approved = odrop.getApprovedListings();
 
-    // Load Listings
-    const listingsContainer = document.getElementById('listingsContainer');
-    const listings = JSON.parse(localStorage.getItem('marketListings') || '[]');
-
-    if (listings.length === 0) {
-      listingsContainer.innerHTML = `<p class="text-gray-500 dark:text-gray-400">No listings yet. <a href='sell.html' class='text-blue-500 underline'>List one!</a></p>`;
+    if(approved.length === 0){
+      grid.innerHTML = `<p class="text-gray-500 dark:text-gray-400">No approved listings right now. Check back later or <button class="text-blue-400 underline" onclick="goSell()">list an item</button>.</p>`;
     } else {
-      listingsContainer.innerHTML = listings.map(item => `
-        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
-          <h2 class="text-xl font-semibold mb-2">${item.title}</h2>
+      grid.innerHTML = approved.map(item => `
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <div class="h-48 mb-3 bg-gray-100 dark:bg-gray-700 rounded overflow-hidden flex items-center justify-center">
+            ${item.images && item.images[0] ? `<img src="${item.images[0].data}" class="object-cover w-full h-full" />` : `<div class="text-gray-400">No image</div>`}
+          </div>
+          <h2 class="text-xl font-semibold">${item.title}</h2>
           <p class="text-gray-600 dark:text-gray-300 mb-2">${item.description}</p>
-          <p class="font-bold mb-2">${item.price} ${item.currency}</p>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">Buy Now</button>
+          <div class="flex items-center justify-between">
+            <div class="font-bold">${item.price} ${item.currency}</div>
+            <div>
+              <button class="bg-blue-500 text-white px-3 py-1 rounded" onclick='(function(){odrop.addToCart(${JSON.stringify(item)}); alert("Added to cart");})()'>Add to cart</button>
+            </div>
+          </div>
         </div>
       `).join('');
     }
