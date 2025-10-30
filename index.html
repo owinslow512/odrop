@@ -1,143 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Odrop Marketplace</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Odrop — Crypto-first marketplace</title>
 
-  <!-- ✅ Tailwind CSS CDN -->
+  <!-- tailwind CDN for quick styling -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: '#3B82F6',
-          },
-        },
-      },
-    };
-  </script>
+  <link rel="stylesheet" href="fade.css">
+  <style>
+    /* small layout custom */
+    main { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+    header .brand { font-weight:700; font-size:1.4rem; }
+    .navlink { color: inherit; text-decoration:none; padding:8px 12px; border-radius:8px; }
+    .navlink:hover { background: rgba(255,255,255,0.03); }
+  </style>
 </head>
-
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col">
-  <!-- ✅ Navbar -->
-  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center shadow-md">
-    <div class="flex items-center space-x-3">
-      <a href="index.html" class="text-2xl font-bold text-white">Odrop</a>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+  <header class="bg-gray-900 text-white p-4">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <a href="index.html" class="brand navlink">Odrop</a>
+        <nav class="hidden md:flex items-center space-x-2">
+          <a class="navlink" href="index.html">Home</a>
+          <a class="navlink" href="marketplace.html">Marketplace</a>
+          <a class="navlink" href="sell.html">Sell</a>
+          <a class="navlink" href="profile.html">Profile</a>
+          <a class="navlink" href="support.html">Support</a>
+        </nav>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button id="themeBtn" class="p-2 rounded"></button>
+        <a id="cartLink" href="cart.html" class="navlink">Cart (<span id="cartCount">0</span>)</a>
+      </div>
     </div>
+  </header>
 
-    <div class="flex items-center space-x-6">
-      <a href="index.html" class="hover:text-blue-400">Home</a>
-      <a href="marketplace.html" class="hover:text-blue-400">Marketplace</a>
-      <a href="sell.html" class="hover:text-blue-400">Sell</a>
-      <a href="profile.html" class="hover:text-blue-400">Profile</a>
+  <main data-stagger>
+    <section class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow">
+      <h1 class="text-4xl font-bold mb-4">Odrop Marketplace — crypto-first, community-driven</h1>
+      <p class="text-gray-600 dark:text-gray-300 mb-6">Buy and sell items using crypto: BTC, ETH, XRP, USDC, PLS. Data stored locally for now — we'll move to DB soon.</p>
+      <div class="flex space-x-3">
+        <a class="px-4 py-2 bg-blue-600 text-white rounded" href="marketplace.html">Browse Listings</a>
+        <a class="px-4 py-2 border rounded" href="sell.html">Start Selling</a>
+      </div>
+    </section>
 
-      <!-- 🔔 Notification Bell -->
-      <button id="notifyBtn" class="relative focus:outline-none">
-        <span class="text-xl">🔔</span>
-        <span id="notificationDot" class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full hidden"></span>
-      </button>
-
-      <!-- 🛒 Cart -->
-      <button id="cartBtn" class="relative">
-        <span class="text-xl">🛒</span>
-        <span id="cartCount" class="absolute -top-2 -right-2 bg-blue-500 text-xs px-1 rounded-full">0</span>
-      </button>
-
-      <!-- 🌙 Dark/Light Toggle -->
-      <button id="themeToggle" class="text-xl">🌙</button>
-    </div>
-  </nav>
-
-  <!-- ✅ Hero Section -->
-  <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-16">
-    <h1 class="text-4xl font-extrabold mb-4">Odrop Marketplace — Crypto-first, Community-driven</h1>
-    <p class="max-w-2xl mb-8 text-lg text-gray-700 dark:text-gray-300">
-      Buy and sell items using crypto (BTC, ETH, XRP, USDC, PLS). Secure listings, profile system, and mock checkout for testing.
-    </p>
-
-    <div class="flex space-x-4">
-      <a href="marketplace.html" class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md">Browse Listings</a>
-      <a href="sell.html" class="bg-white dark:bg-gray-800 text-blue-500 border border-blue-500 hover:bg-blue-100 dark:hover:bg-gray-700 px-5 py-2 rounded-lg shadow-md">Start Selling</a>
-    </div>
+    <section class="mt-8" id="featured" data-stagger>
+      <h2 class="text-2xl font-semibold mb-4">Featured</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="featuredGrid"></div>
+    </section>
   </main>
 
-  <!-- ✅ Trusted Suppliers -->
-  <section class="px-6 py-12">
-    <div class="max-w-4xl mx-auto bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-2xl p-6 shadow-lg">
-      <h2 class="text-2xl font-semibold mb-2">Trusted Suppliers</h2>
-      <p class="text-gray-100">
-        We recommend verified merchants and crypto-friendly suppliers for dropshipping.
-        Sellers must add tracking for all releases.
-      </p>
-    </div>
-  </section>
+  <footer class="py-8 text-center text-gray-500">© 2025 Odrop</footer>
 
-  <!-- ✅ Footer -->
-  <footer class="bg-gray-900 text-white text-center py-4">
-    <p class="text-sm">&copy; 2025 Odrop Marketplace. All rights reserved.</p>
-  </footer>
-
-  <!-- ✅ JavaScript -->
+  <script src="fade.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/marketplace.js"></script>
   <script>
-    // 🔄 Theme Toggle
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      themeToggle.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
-      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-    });
+    // init theme button
+    odrop.initThemeButton('themeBtn');
 
-    if (localStorage.getItem('theme') === 'dark') {
-      document.documentElement.classList.add('dark');
-      themeToggle.textContent = '☀️';
-    }
-
-    // 🛒 Mock Cart
-    const cartBtn = document.getElementById('cartBtn');
-    const cartCount = document.getElementById('cartCount');
-    let cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    cartCount.textContent = cartItems.length;
-
-    cartBtn.addEventListener('click', () => {
-      alert(`You have ${cartItems.length} item(s) in your cart.`);
-    });
-
-    // 🔔 Notifications
-    const notifyBtn = document.getElementById('notifyBtn');
-    const notificationDot = document.getElementById('notificationDot');
-    let notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-
-    if (notifications.length > 0) notificationDot.classList.remove('hidden');
-
-    notifyBtn.addEventListener('click', () => {
-      alert(notifications.length ? notifications.join("\\n") : "No new notifications.");
-      notifications = [];
-      notificationDot.classList.add('hidden');
-      localStorage.setItem('notifications', JSON.stringify([]));
-    });
-
-    // 🧭 Redirect if not logged in
-    const user = localStorage.getItem('loggedInUser');
-    document.querySelectorAll('a[href="profile.html"]').forEach(link => {
-      link.addEventListener('click', e => {
-        if (!user) {
-          e.preventDefault();
-          window.location.href = 'login.html';
-        }
-      });
+    // small demo featured (use approved)
+    document.addEventListener('DOMContentLoaded', () => {
+      const f = document.getElementById('featuredGrid');
+      const items = odrop.getApprovedListings().slice(0,3);
+      if(items.length === 0){
+        f.innerHTML = '<div class="text-gray-500">No featured listings yet</div>';
+        return;
+      }
+      f.innerHTML = items.map(it=>`
+        <article class="p-4 bg-white dark:bg-gray-800 rounded fade-card">
+          <div class="h-36 bg-gray-100 dark:bg-gray-700 rounded mb-3 overflow-hidden">${it.images && it.images[0] ? `<img src="${it.images[0].data}" style="width:100%;height:100%;object-fit:cover">` : '<div class="skeleton h-full w-full"></div>'}</div>
+          <h3 class="font-semibold">${it.title}</h3>
+          <div class="text-sm text-gray-500">${it.price} ${it.currency}</div>
+        </article>
+      `).join('');
     });
   </script>
-<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-<script src="script.js" defer></script>
-<script>
-window.addEventListener("load", () => {
-  document.body.classList.add("loaded");
-});
-</script>
 </body>
 </html>
