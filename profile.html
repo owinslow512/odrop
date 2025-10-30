@@ -18,6 +18,32 @@
     </div>
   </header>
 
+  <img id="profileAvatar" src="" style="width:150px;height:150px;border-radius:50%">
+<input id="avatarFile" type="file" accept="image/*">
+<input id="profileUsername" placeholder="Username">
+<button id="saveUsernameBtn">Save Username</button>
+
+<script>
+function updateUI(){
+  const p = readProfile();
+  document.getElementById('profileAvatar').src = p.avatar || 'images/default-avatar.png';
+  document.getElementById('profileUsername').value = p.username || '';
+}
+document.getElementById('avatarFile').addEventListener('change', async (e)=> {
+  const data = await setAvatarFromInput(e.target);
+  document.getElementById('profileAvatar').src = data;
+});
+document.getElementById('saveUsernameBtn').addEventListener('click', ()=> {
+  try {
+    saveUsername(document.getElementById('profileUsername').value.trim());
+    alert('Username updated');
+    updateUI();
+  } catch(e) { alert(e.message); }
+});
+updateUI();
+</script>
+
+
   <main class="max-w-md mx-auto p-8" data-stagger>
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
       <img id="avatarImg" src="Drop.png" alt="avatar" class="w-28 h-28 rounded-full mx-auto mb-3 object-cover border" />
