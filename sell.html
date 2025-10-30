@@ -1,116 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sell | Odrop</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
+// js/sell.js
+// Requires: emailjs (CDN), main.js (odrop)
+document.addEventListener('DOMContentLoaded', () => {
+  if(typeof emailjs === 'undefined') {
+    console.warn('EmailJS not loaded. Listing review email will fail.');
+  }
+  const EMAILJS_SERVICE_ID = "service_8pofbon";
+  const EMAILJS_TEMPLATE_LISTING_ID = "template_ed7sx4o";
+  const EMAILJS_PUBLIC_KEY = "mqnVOPu2ysfQu72il";
+
+  // init emailjs if available
+  if(window.emailjs) emailjs.init(EMAILJS_PUBLIC_KEY);
+
+  const form = document.getElementById('sellForm');
+  if(!form) return;
+
+  // image inputs
+  const fileInput = document.getElementById('listingImages');
+  const previewArea = document.getElementById('imagePreview');
+
+  fileInput && fileInput.addEventListener('change', (ev) => {
+    previewArea.innerHTML = '';
+    const files = Array.from(ev.target.files).slice(0,6);
+    files.forEach(file => {
+      const reader = new FileReader();
+      const el = document.createElement('div');
+      el.className = 'w-32 h-20 rounded overflow-hidden border';
+      el.innerHTML = '<div class="skeleton w-full h-full"></div>';
+      previewArea.appendChild(el);
+      reader.onload = (e) => {
+        el.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`;
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = form.querySelector('[name=title]').value.trim();
+    const desc = form.querySelector('[name=description]').value.trim();
+    const price = form.querySelector('[name=price]').value.trim();
+    const crypto = form.querySelector('[name=crypto]').value;
+
+    if(title.length < 3) return alert('Title too short');
+    if(desc.length < 50) return alert('Description must be at least 50 characters.');
+    if(!price || isNaN(price)) return alert('Enter a numeric price.');
+
+    // read images
+    const images = [];
+    const files = Array.from(fileInput.files || []);
+    for(let f of files.slice(0,6)){
+      const b64 = await toBase64(f);
+      images.push({name: f.name, data: b64});
+    }
+
+    const listing = {
+      id: odrop.uid('listing'),
+      title, description: desc, price, currency: crypto, images,
+      approved: false, created_at: Date.now()
     };
-  </script>
-  <style>
-    /* Fade transition for entering page */
-    body {
-      opacity: 0;
-      transition: opacity 0.6s ease-in-out;
+    // save locally
+    odrop.addListing(listing);
+
+    // send review email (so you can approve)
+    if(window.emailjs){
+      try{
+        const emailData = {
+          from_name: 'Odrop Listing',
+          listing_title: title,
+          listing_description: desc,
+          listing_price: price,
+          listing_crypto: crypto,
+          reply_to: 'noreply@odrop',
+          listing_id: listing.id,
+          listing_preview: images[0] ? images[0].data : ''
+        };
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_LISTING_ID, emailData, EMAILJS_PUBLIC_KEY);
+        alert('Listing submitted for review — emailed to admin.');
+        form.reset(); previewArea.innerHTML = '';
+      }catch(err){
+        console.error(err);
+        alert('Listing saved, but failed to send review email. Check console.');
+      }
+    } else {
+      alert('Listing saved locally. EmailJS not loaded.');
+      form.reset(); previewArea.innerHTML = '';
     }
-    body.loaded {
-      opacity: 1;
-    }
+  });
 
-    /* Page transition when navigating */
-    .fade-out {
-      opacity: 0;
-      transition: opacity 0.4s ease-in-out;
-    }
-  </style>
-</head>
-<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white flex flex-col">
-
-  <!-- Navbar -->
-  <nav class="bg-gray-900 text-white px-6 py-4 flex justify-between items-center shadow-md">
-    <div class="text-2xl font-bold cursor-pointer" onclick="navigateWithFade('index.html')">Odrop</div>
-    <div class="flex items-center space-x-6 text-base">
-      <button onclick="navigateWithFade('marketplace.html')" class="hover:text-blue-400 transition">Marketplace</button>
-      <button onclick="navigateWithFade('profile.html')" class="hover:text-blue-400 transition">Profile</button>
-      <button onclick="navigateWithFade('support.html')" class="hover:text-blue-400 transition">Support</button>
-      <button onclick="navigateWithFade('settings.html')" class="hover:text-blue-400 transition">Settings</button>
-    </div>
-  </nav>
-
-  <!-- Main -->
-  <main class="flex-grow p-8 max-w-3xl mx-auto w-full transition-all duration-500 ease-in-out">
-    <h1 class="text-3xl font-bold mb-6 text-center">Sell an Item</h1>
-
-    <form id="sellForm" class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg space-y-5">
-      <div>
-        <label class="block mb-1 font-medium">Title</label>
-        <input type="text" id="title" placeholder="Enter product title"
-          class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition">
-      </div>
-
-      <div>
-        <label class="block mb-1 font-medium">Description</label>
-        <textarea id="description" placeholder="Describe your item"
-          class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 h-24 resize-none focus:ring-2 focus:ring-blue-500 outline-none transition"></textarea>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block mb-1 font-medium">Price (USD)</label>
-          <input type="number" id="price" placeholder="Enter price"
-            class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition">
-        </div>
-
-        <div>
-          <label class="block mb-1 font-medium">Accepted Crypto</label>
-          <select id="crypto"
-            class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition">
-            <option>ETH</option>
-            <option>BTC</option>
-            <option>PLS</option>
-            <option>USDC</option>
-          </select>
-        </div>
-      </div>
-
-      <div>
-        <label class="block mb-1 font-medium">Upload Image</label>
-        <input type="file" id="imageUpload" accept="image/*"
-          class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer">
-      </div>
-
-      <button type="submit"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-all transform hover:scale-[1.02] active:scale-[0.98]">
-        Submit Listing
-      </button>
-    </form>
-  </main>
-
-  <script>
-    // fade-in on load
-    window.addEventListener("load", () => {
-      document.body.classList.add("loaded");
-    });
-
-    // fade-out transition between pages
-    function navigateWithFade(url) {
-      document.body.classList.remove("loaded");
-      document.body.classList.add("fade-out");
-      setTimeout(() => {
-        window.location.href = url;
-      }, 400);
-    }
-
-    // handle form submission (example)
-    document.getElementById("sellForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      alert("Listing submitted!");
-      navigateWithFade("marketplace.html");
-    });
-  </script>
-
-</body>
-</html>
+  function toBase64(file){ return new Promise((res,rej)=>{
+    const r = new FileReader();
+    r.onload = ()=> res(r.result);
+    r.onerror = ()=> rej();
+    r.readAsDataURL(file);
+  }); }
+});
