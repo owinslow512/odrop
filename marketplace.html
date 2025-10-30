@@ -1,121 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Marketplace — Odrop</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          keyframes: {
-            fadeIn: {
-              '0%': { opacity: '0', transform: 'translateY(10px)' },
-              '100%': { opacity: '1', transform: 'translateY(0)' }
-            }
-          },
-          animation: {
-            fadeIn: 'fadeIn 0.5s ease-in-out forwards'
-          }
-        }
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="fade.css"/>
 </head>
-
 <body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
-  <!-- Navbar -->
-  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center shadow-lg">
-    <div class="text-2xl font-bold cursor-pointer" onclick="goHome()">Odrop</div>
-    <div class="flex items-center space-x-6">
-      <button onclick="goSell()" class="hover:text-blue-300">Sell</button>
-      <button onclick="goProfile()" class="hover:text-blue-300">Profile</button>
-      <button onclick="goSupport()" class="hover:text-blue-300">Support</button>
-      <button onclick="goSettings()" class="hover:text-blue-300">Settings</button>
-      <button onclick="goCart()" class="relative hover:text-blue-300">
-        🛒 Cart <span id="cartCount" class="absolute -top-2 -right-3 bg-blue-500 text-white rounded-full text-xs px-2 py-0.5">0</span>
-      </button>
-      <button id="themeBtn" class="text-xl"></button>
+  <header class="bg-gray-900 text-white p-4">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="text-xl font-bold">Odrop</a>
+      <div class="flex items-center space-x-4">
+        <a href="sell.html" class="navlink">Sell</a>
+        <a href="profile.html" class="navlink">Profile</a>
+        <a href="support.html" class="navlink">Support</a>
+        <button id="themeBtn" class="p-2"></button>
+        <a id="cartLink" href="cart.html" class="ml-2">Cart (<span id="cartCount">0</span>)</a>
+      </div>
     </div>
-  </nav>
+  </header>
 
-  <!-- Main Content -->
-  <main class="p-6 max-w-6xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6">Marketplace</h1>
-    <div id="grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  <main class="max-w-6xl mx-auto p-8" data-stagger>
+    <h1 class="text-4xl font-bold mb-6">Marketplace</h1>
+    <div id="marketGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
   </main>
 
-  <script src="main.js"></script>
+  <script src="fade.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/marketplace.js"></script>
   <script>
-    // Initialize theme button
-    odrop.initThemeButton("themeBtn");
-
-    const grid = document.getElementById("grid");
-    const cartCount = document.getElementById("cartCount");
-
-    // Fetch approved listings dynamically (assuming stored in localStorage)
-    const approved = JSON.parse(localStorage.getItem("approvedListings") || "[]");
-
-    // If no listings available
-    if (approved.length === 0) {
-      grid.innerHTML = `
-        <p class="text-gray-500 dark:text-gray-400">
-          No approved listings yet. Check back later or 
-          <button class="text-blue-400 underline" onclick="goSell()">list an item</button>.
-        </p>`;
-    } else {
-      // Animate items
-      grid.innerHTML = approved.map((item, index) => `
-        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg transform hover:scale-[1.02] transition-all duration-300 animate-fadeIn" style="animation-delay:${index * 0.1}s">
-          <div class="h-48 mb-3 bg-gray-100 dark:bg-gray-700 rounded overflow-hidden flex items-center justify-center">
-            ${item.images && item.images[0] 
-              ? `<img src="${item.images[0].data}" class="object-cover w-full h-full transition-all duration-300 hover:scale-105" />`
-              : `<div class="text-gray-400">No image</div>`}
-          </div>
-          <h2 class="text-xl font-semibold mb-1">${item.title}</h2>
-          <p class="text-gray-600 dark:text-gray-300 mb-3 text-sm">${item.description}</p>
-          <div class="flex items-center justify-between">
-            <div class="font-bold text-blue-500">${item.price} ${item.currency}</div>
-            <button 
-              class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded transition"
-              onclick='addToCart(${JSON.stringify(item)})'>
-              Add to cart
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Cart management
-    function addToCart(item) {
-      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-      cart.push(item);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      updateCartCount();
-      alert("✅ Added to cart!");
-    }
-
-    function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-      cartCount.textContent = cart.length;
-    }
-
-    updateCartCount();
-
-    // Page navigation
-    function goHome() { window.location.href = "index.html"; }
-    function goSell() { window.location.href = "sell.html"; }
-    function goProfile() { window.location.href = "profile.html"; }
-    function goSupport() { window.location.href = "contact.html"; }
-    function goSettings() { window.location.href = "settings.html"; }
-    function goCart() { window.location.href = "cart.html"; }
+    odrop.initThemeButton('themeBtn');
   </script>
-<script>
-window.addEventListener("load", () => {
-  document.body.classList.add("loaded");
-});
-</script>
 </body>
 </html>
