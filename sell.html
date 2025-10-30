@@ -1,121 +1,122 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sell — Odrop</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script> tailwind.config = { darkMode: 'class' } </script>
-</head>
-<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+// sell.js
+import { getAuth } from "firebase/auth";
 
-  <!-- NAV (keeps consistent links) -->
-  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center">
-    <div class="text-2xl font-bold cursor-pointer" onclick="goHome()">Odrop</div>
-    <div class="flex items-center space-x-6">
-      <button onclick="goHome()" class="hover:text-blue-300">Home</button>
-      <button onclick="goMarketplace()" class="hover:text-blue-300">Marketplace</button>
-      <button onclick="goProfile()" class="hover:text-blue-300">Profile</button>
-      <button onclick="goSupport()" class="hover:text-blue-300">Support</button>
-      <button id="themeBtn" class="text-xl"></button>
-    </div>
-  </nav>
+// ✅ EmailJS credentials
+const EMAILJS_SERVICE_ID = "service_8pofbon";
+const EMAILJS_TEMPLATE_LISTING_ID = "template_ed7sx4o";
+const EMAILJS_PUBLIC_KEY = "mqnVOPu2ysfQu72il";
 
-  <main class="max-w-3xl mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-4">List an item for sale</h1>
+document.addEventListener("DOMContentLoaded", () => {
+  const sellForm = document.getElementById("sellForm");
 
-    <form id="sellForm" class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-      <label class="block mb-2 font-medium">Title (min 50 characters)</label>
-      <input id="title" class="w-full p-2 rounded border mb-4 dark:bg-gray-700" placeholder="Give your item a descriptive title..." />
+  if (!sellForm) return;
 
-      <label class="block mb-2 font-medium">Description (required)</label>
-      <textarea id="desc" class="w-full p-2 rounded border mb-4 dark:bg-gray-700"></textarea>
+  sellForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block mb-2 font-medium">Price</label>
-          <input id="price" type="number" step="0.0001" min="0" class="w-full p-2 rounded border dark:bg-gray-700" />
-        </div>
-        <div>
-          <label class="block mb-2 font-medium">Currency</label>
-          <select id="currency" class="w-full p-2 rounded border dark:bg-gray-700">
-            <option>XRP</option>
-            <option>ETH</option>
-            <option>BTC</option>
-            <option>PLS</option>
-            <option>USDC</option>
-          </select>
-        </div>
-      </div>
+    const auth = getAuth();
+    const user = auth.currentUser;
 
-      <div class="mt-4">
-        <label class="block mb-2 font-medium">Images (you can upload multiple)</label>
-        <input id="images" type="file" accept="image/*" multiple />
-        <div id="preview" class="mt-3 grid grid-cols-4 gap-2"></div>
-      </div>
+    const title = document.getElementById("listingTitle").value;
+    const description = document.getElementById("listingDescription").value;
+    const price = document.getElementById("listingPrice").value;
+    const crypto = document.getElementById("listingCrypto").value;
 
-      <div class="mt-6 flex space-x-3">
-        <button id="submitBtn" class="bg-blue-600 text-white px-4 py-2 rounded">Submit Listing</button>
-        <button type="button" id="clearBtn" class="bg-gray-300 dark:bg-gray-700 px-4 py-2 rounded">Clear</button>
-      </div>
-    </form>
+    if (!user) {
+      alert("You must be signed in to create a listing.");
+      return;
+    }
 
-    <p id="status" class="mt-4 text-sm text-gray-600 dark:text-gray-300"></p>
-  </main>
+    if (title.length < 50) {
+      alert("Title must be at least 50 characters long.");
+      return;
+    }
 
-  <script src="main.js"></script>
-  <script>
-    odrop.initThemeButton("themeBtn");
-    // require auth to sell (will redirect to login if none)
-    odrop.requireAuth();
+    try {
+      const emailData = {
+        from_name: user.email,
+        listing_title: title,
+        listing_description: description,
+        listing_price: price,
+        listing_crypto: crypto,
+        reply_to: user.email,
+      };
 
-    const imagesEl = document.getElementById("images");
-    const preview = document.getElementById("preview");
-    let imagesBase64 = [];
+      // ✅ Send listing review email
+      const response = await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_LISTING_ID,
+        emailData,
+        EMAILJS_PUBLIC_KEY
+      );
 
-    imagesEl.addEventListener("change", async (e) => {
-      const files = e.target.files;
-      preview.innerHTML = "";
-      imagesBase64 = await odrop.filesToBase64(files);
-      imagesBase64.forEach(img => {
-        const d = document.createElement("div");
-        d.className = "h-24 w-24 rounded overflow-hidden border";
-        d.innerHTML = `<img src="${img.data}" class="object-cover h-full w-full" />`;
-        preview.appendChild(d);
-      });
-    });
+      console.log("Listing review email sent:", response);
+      alert("Your listing has been submitted for review!");
+      sellForm.reset();
+    } catch (error) {
+      console.error("Error sending listing email:", error);
+      alert("Error submitting your listing. Please try again.");
+    }
+  });
+});
+// sell.js
+import { getAuth } from "firebase/auth";
 
-    document.getElementById("clearBtn").addEventListener("click", () => {
-      document.getElementById("sellForm").reset();
-      preview.innerHTML = "";
-      imagesBase64 = [];
-      document.getElementById("status").textContent="";
-    });
+// ✅ EmailJS credentials
+const EMAILJS_SERVICE_ID = "service_8pofbon";
+const EMAILJS_TEMPLATE_LISTING_ID = "template_ed7sx4o";
+const EMAILJS_PUBLIC_KEY = "mqnVOPu2ysfQu72il";
 
-    document.getElementById("sellForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const title = document.getElementById("title").value.trim();
-      const desc = document.getElementById("desc").value.trim();
-      const price = document.getElementById("price").value;
-      const currency = document.getElementById("currency").value;
+document.addEventListener("DOMContentLoaded", () => {
+  const sellForm = document.getElementById("sellForm");
 
-      if(title.length < 50){
-        alert("Title must be at least 50 characters (make it descriptive).");
-        return;
-      }
-      if(!desc) { alert("Description required."); return; }
-      if(!price || price <= 0) { alert("Enter a valid price."); return; }
+  if (!sellForm) return;
 
-      document.getElementById("status").textContent = "Submitting listing...";
-      const listing = await odrop.submitListing({
-        title, description:desc, price, currency, imagesBase64
-      });
-      document.getElementById("status").textContent = "Listing submitted and is pending admin review.";
-      // clear
-      document.getElementById("sellForm").reset();
-      preview.innerHTML = "";
-      imagesBase64 = [];
-    });
-  </script>
-</body>
-</html>
+  sellForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    const title = document.getElementById("listingTitle").value;
+    const description = document.getElementById("listingDescription").value;
+    const price = document.getElementById("listingPrice").value;
+    const crypto = document.getElementById("listingCrypto").value;
+
+    if (!user) {
+      alert("You must be signed in to create a listing.");
+      return;
+    }
+
+    if (title.length < 50) {
+      alert("Title must be at least 50 characters long.");
+      return;
+    }
+
+    try {
+      const emailData = {
+        from_name: user.email,
+        listing_title: title,
+        listing_description: description,
+        listing_price: price,
+        listing_crypto: crypto,
+        reply_to: user.email,
+      };
+
+      // ✅ Send listing review email
+      const response = await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_LISTING_ID,
+        emailData,
+        EMAILJS_PUBLIC_KEY
+      );
+
+      console.log("Listing review email sent:", response);
+      alert("Your listing has been submitted for review!");
+      sellForm.reset();
+    } catch (error) {
+      console.error("Error sending listing email:", error);
+      alert("Error submitting your listing. Please try again.");
+    }
+  });
+});
