@@ -1,16 +1,13 @@
-/* fade.css — smooth fade + slight upward slide */
+/* fade.css — handles global fade in/out transitions */
 body {
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.5s ease, transform 0.6s ease;
+  transition: opacity 0.4s ease-in-out;
 }
 
 body.fade-in {
   opacity: 1;
-  transform: translateY(0);
 }
 
 body.fade-out {
   opacity: 0;
-  transform: translateY(10px);
 }
