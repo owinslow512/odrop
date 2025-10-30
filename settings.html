@@ -1,55 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Settings — Odrop</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
-  <script> tailwind.config = { darkMode: 'class' }; </script>
+  <script> tailwind.config = { darkMode: 'class' } </script>
 </head>
-
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col">
-  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center shadow-md">
-    <a href="index.html" class="text-2xl font-bold text-white">Odrop</a>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center">
+    <div class="text-2xl font-bold cursor-pointer" onclick="goHome()">Odrop</div>
     <div class="flex items-center space-x-6">
-      <a href="index.html" class="hover:text-blue-400">Home</a>
-      <a href="marketplace.html" class="hover:text-blue-400">Marketplace</a>
-      <a href="sell.html" class="hover:text-blue-400">Sell</a>
-      <a href="profile.html" class="hover:text-blue-400">Profile</a>
-      <button id="themeToggle" class="text-xl">🌙</button>
+      <button onclick="goMarketplace()">Marketplace</button>
+      <button onclick="goSell()">Sell</button>
+      <button onclick="goProfile()">Profile</button>
+      <button onclick="goSupport()">Support</button>
+      <button id="themeBtn" class="text-xl"></button>
     </div>
   </nav>
 
-  <main class="flex-1 px-6 py-10 max-w-xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6 text-center">Settings</h1>
+  <main class="max-w-2xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-4">Settings</h1>
 
-    <div class="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-      <button id="toggleTheme" class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg w-full">Toggle Dark/Light</button>
-      <button id="clearListings" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg w-full">Clear All Listings</button>
+    <div class="bg-white dark:bg-gray-800 rounded p-6 shadow space-y-4">
+      <div>
+        <label class="block mb-2 font-medium">Theme</label>
+        <button id="toggleThemeBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Toggle theme</button>
+      </div>
+
+      <div>
+        <label class="block mb-2 font-medium">Admin Mode</label>
+        <label class="inline-flex items-center space-x-2">
+          <input id="adminToggle" type="checkbox" />
+          <span>Enable admin dashboard (shows pending listings)</span>
+        </label>
+      </div>
+
+      <div>
+        <label class="block mb-2 font-medium">Danger Zone</label>
+        <button id="clearAllBtn" class="bg-red-600 text-white px-4 py-2 rounded">Clear all local data</button>
+      </div>
     </div>
   </main>
 
-  <footer class="bg-gray-900 text-white text-center py-4">
-    <p class="text-sm">&copy; 2025 Odrop Marketplace</p>
-  </footer>
-
+  <script src="main.js"></script>
   <script>
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      themeToggle.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
-      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-    });
-    if (localStorage.getItem('theme') === 'dark') {
-      document.documentElement.classList.add('dark');
-      themeToggle.textContent = '☀️';
-    }
+    odrop.initThemeButton("themeBtn");
+    document.getElementById("toggleThemeBtn").addEventListener("click", ()=> document.getElementById("themeBtn").click());
 
-    document.getElementById('toggleTheme').addEventListener('click', () => themeToggle.click());
-    document.getElementById('clearListings').addEventListener('click', () => {
-      localStorage.removeItem('marketListings');
-      alert('All listings cleared.');
+    // admin toggle persists
+    const adminToggle = document.getElementById("adminToggle");
+    adminToggle.checked = localStorage.getItem("odropAdmin") === "true";
+    adminToggle.addEventListener("change", () => {
+      localStorage.setItem("odropAdmin", adminToggle.checked ? "true" : "false");
+      alert("Admin mode " + (adminToggle.checked ? "enabled" : "disabled") + ". Use the Review page link to access pending listings.");
+    });
+
+    document.getElementById("clearAllBtn").addEventListener("click", () => {
+      if(confirm("Clear all Odrop local data? This cannot be undone.")){
+        localStorage.removeItem("odropUser");
+        localStorage.removeItem("odropPending");
+        localStorage.removeItem("odropApproved");
+        localStorage.removeItem("odropCart");
+        localStorage.removeItem("odropSupportQueue");
+        localStorage.removeItem("odropEmailQueue");
+        alert("Cleared.");
+        location.reload();
+      }
     });
   </script>
 </body>
