@@ -1,1 +1,50 @@
+<!doctype html>
+<html><head>
+<meta charset="utf-8"><title>Reset — Odrop</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="fade.css">
+<script src="main.js" defer></script>
+</head>
+<body class="fade-in">
+<main style="max-width:600px;margin:60px auto;padding:20px">
+  <h1>Reset Password</h1>
+  <p id="info"></p>
 
+  <div id="resetForm" style="display:none">
+    <input id="newPw" class="input" type="password" placeholder="New password">
+    <button id="doReset">Set new password</button>
+    <p id="resetMsg"></p>
+  </div>
+</main>
+
+<script>
+function getParam(name){ return new URLSearchParams(location.search).get(name); }
+const token = getParam('token');
+const info = document.getElementById('info');
+const form = document.getElementById('resetForm');
+
+if(!token){ info.textContent = 'Invalid reset link.'; }
+else {
+  const tokens = odrop.storage.loadJSON('odrop_reset_tokens', []);
+  const entry = tokens.find(t=>t.token===token);
+  if(!entry || entry.expires < Date.now()){ info.textContent = 'Link expired or invalid.'; }
+  else {
+    info.textContent = 'Resetting account: ' + entry.user;
+    form.style.display = 'block';
+    document.getElementById('doReset').addEventListener('click', ()=> {
+      const p = document.getElementById('newPw').value.trim();
+      if(p.length < 6) { showFieldError(document.getElementById('newPw'),'Password too short'); return; }
+      // update user password in odrop_users
+      const users = odrop.storage.loadJSON('odrop_users', []);
+      const u = users.find(x=>x.username===entry.user);
+      if(u){ u.password = p; odrop.storage.saveJSON('odrop_users', users); document.getElementById('resetMsg').textContent='Password updated, redirecting...'; 
+        // remove token
+        const remaining = tokens.filter(t=>t.token!==token);
+        odrop.storage.saveJSON('odrop_reset_tokens', remaining);
+        setTimeout(()=> window.location.href='login.html',800);
+      } else { document.getElementById('resetMsg').textContent='User not found'; }
+    });
+  }
+}
+</script>
+</body></html>
