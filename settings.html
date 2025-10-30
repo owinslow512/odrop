@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — Odrop</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script> tailwind.config = { darkMode: 'class' }; </script>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex flex-col">
+  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center shadow-md">
+    <a href="index.html" class="text-2xl font-bold text-white">Odrop</a>
+    <div class="flex items-center space-x-6">
+      <a href="index.html" class="hover:text-blue-400">Home</a>
+      <a href="marketplace.html" class="hover:text-blue-400">Marketplace</a>
+      <a href="sell.html" class="hover:text-blue-400">Sell</a>
+      <a href="profile.html" class="hover:text-blue-400">Profile</a>
+      <button id="themeToggle" class="text-xl">🌙</button>
+    </div>
+  </nav>
+
+  <main class="flex-1 px-6 py-10 max-w-xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-center">Settings</h1>
+
+    <div class="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+      <button id="toggleTheme" class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg w-full">Toggle Dark/Light</button>
+      <button id="clearListings" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg w-full">Clear All Listings</button>
+    </div>
+  </main>
+
+  <footer class="bg-gray-900 text-white text-center py-4">
+    <p class="text-sm">&copy; 2025 Odrop Marketplace</p>
+  </footer>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      themeToggle.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    });
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+      themeToggle.textContent = '☀️';
+    }
+
+    document.getElementById('toggleTheme').addEventListener('click', () => themeToggle.click());
+    document.getElementById('clearListings').addEventListener('click', () => {
+      localStorage.removeItem('marketListings');
+      alert('All listings cleared.');
+    });
+  </script>
+</body>
+</html>
