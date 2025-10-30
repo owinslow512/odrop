@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sell | Odrop</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script type="module" src="sell.js" defer></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="index.html" class="logo">Odrop</a></div>
+    <div class="nav-right">
+      <a href="marketplace.html">Marketplace</a>
+      <a href="profile.html">Profile</a>
+      <a href="support.html">Support</a>
+      <a href="settings.html">Settings</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <h1>Sell an Item</h1>
+    <form id="sellForm" class="sell-form">
+      <label>Title</label>
+      <input type="text" id="listingTitle" placeholder="Enter product title" required>
+
+      <label>Description</label>
+      <textarea id="listingDescription" placeholder="Describe your item" required></textarea>
+
+      <label>Price (USD)</label>
+      <input type="number" id="listingPrice" placeholder="Enter price" required>
+
+      <label>Accepted Crypto</label>
+      <select id="listingCrypto">
+        <option value="ETH">ETH</option>
+        <option value="BTC">BTC</option>
+        <option value="USDT">USDT</option>
+        <option value="PLS">PLS</option>
+      </select>
+
+      <button type="submit">Submit Listing</button>
+    </form>
+  </main>
+</body>
+</html>
