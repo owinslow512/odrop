@@ -1,176 +1,81 @@
-<!-- 🌐 Universal Navbar -->
-<nav class="flex justify-between items-center px-6 py-4 bg-gray-900 text-white shadow-md">
-  <a href="index.html" class="text-2xl font-bold hover:text-blue-400 transition">Odrop</a>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white transition">
+  <!-- 🌐 Universal Navbar -->
+  <nav class="flex justify-between items-center px-6 py-4 bg-gray-900 text-white shadow-md">
+    <a href="index.html" class="text-2xl font-bold hover:text-blue-400 transition">Odrop</a>
 
-  <div class="flex items-center space-x-6">
-    <a href="index.html" class="hover:text-blue-400">Home</a>
-    <a href="marketplace.html" class="hover:text-blue-400">Marketplace</a>
-    <a href="cart.html" id="cart-link" class="hover:text-blue-400 flex items-center">
-      🛒<span id="cart-count" class="ml-1 text-sm bg-red-600 px-2 py-0.5 rounded-full hidden">0</span>
-    </a>
-    <a href="profile.html" class="hover:text-blue-400">Profile</a>
+    <div class="flex items-center space-x-6">
+      <a href="index.html" class="hover:text-blue-400">Home</a>
+      <a href="marketplace.html" class="hover:text-blue-400">Marketplace</a>
+      <a href="profile.html" class="hover:text-blue-400">Profile</a>
 
-    <!-- Notifications -->
-    <div id="notification-bell" class="relative cursor-pointer">
-      🔔
-      <span id="notif-count" class="absolute -top-2 -right-2 bg-red-600 text-xs rounded-full px-1 hidden">0</span>
-      <div id="notif-panel" class="hidden absolute right-0 mt-3 w-64 bg-gray-800 text-white rounded-lg shadow-lg p-3">
-        <p class="text-sm text-gray-400 mb-2">Notifications</p>
-        <div id="notif-list" class="space-y-2 text-sm"></div>
-      </div>
-    </div>
+      <!-- Cart -->
+      <a href="cart.html" id="cart-link" class="hover:text-blue-400 flex items-center">
+        🛒<span id="cart-count" class="ml-1 text-sm bg-red-600 px-2 py-0.5 rounded-full hidden">0</span>
+      </a>
 
-    <!-- Theme Switch -->
-    <button id="theme-toggle" class="bg-gray-700 px-3 py-1 rounded-md hover:bg-gray-600 transition">
-      🌙
-    </button>
-  </div>
-</nav>
-
-<script>
-  // 🌙 Theme Toggle
-  const themeToggle = document.getElementById("theme-toggle");
-  const html = document.documentElement;
-  const savedTheme = localStorage.getItem("theme");
-
-  if (savedTheme === "light") html.classList.remove("dark");
-  else html.classList.add("dark");
-
-  themeToggle.textContent = html.classList.contains("dark") ? "🌙" : "☀️";
-
-  themeToggle.addEventListener("click", () => {
-    html.classList.toggle("dark");
-    const newTheme = html.classList.contains("dark") ? "dark" : "light";
-    localStorage.setItem("theme", newTheme);
-    themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
-  });
-
-  // 🛒 Cart Count (demo)
-  const cartCount = document.getElementById("cart-count");
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  if (cart.length > 0) {
-    cartCount.textContent = cart.length;
-    cartCount.classList.remove("hidden");
-  }
-
-  // 🔔 Notification system (local demo)
-  const notifBell = document.getElementById("notification-bell");
-  const notifPanel = document.getElementById("notif-panel");
-  const notifList = document.getElementById("notif-list");
-  const notifCount = document.getElementById("notif-count");
-
-  let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
-
-  function renderNotifications() {
-    notifList.innerHTML = notifications.length
-      ? notifications.map(n => `<div class="bg-gray-700 p-2 rounded">${n}</div>`).join("")
-      : `<p class="text-gray-500">No new notifications</p>`;
-    notifCount.textContent = notifications.length;
-    notifCount.classList.toggle("hidden", notifications.length === 0);
-  }
-
-  notifBell.addEventListener("click", () => {
-    notifPanel.classList.toggle("hidden");
-  });
-
-  renderNotifications();
-
-  // Example: Add a fake notification (for testing)
-  // notifications.push("Someone wants to buy your product!");
-  // localStorage.setItem("notifications", JSON.stringify(notifications));
-  // renderNotifications();
-</script>
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Odrop Marketplace</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" href="images/Drop.png" />
-</head>
-<body class="bg-slate-50 text-slate-900">
-  <div id="app" class="min-h-screen flex flex-col">
-    <!-- NAV -->
-    <header class="bg-white/80 backdrop-blur sticky top-0 z-40">
-      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <a href="index.html" class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-full bg-gradient-to-br from-sky-500 to-indigo-500 flex items-center justify-center text-white font-bold">O</div>
-          <div class="font-semibold text-lg">Odrop</div>
-        </a>
-
-        <nav class="flex items-center gap-4">
-          <a href="index.html" class="text-slate-700 hover:text-sky-600">Home</a>
-          <a href="about.html" class="text-slate-700 hover:text-sky-600">About</a>
-          <a href="marketplace.html" class="text-slate-700 hover:text-sky-600">Marketplace</a>
-          <a href="sell.html" class="text-slate-700 hover:text-sky-600">Sell</a>
-          <a href="profile.html" class="text-slate-700 hover:text-sky-600">Profile</a>
-
-          <button id="theme-toggle" class="ml-3 p-2 rounded-md bg-slate-100 hover:bg-slate-200">🌙</button>
-          <button id="cart-btn" class="ml-2 p-2 rounded-md bg-slate-100 hover:bg-slate-200">🛒</button>
-        </nav>
-      </div>
-    </header>
-
-    <!-- HERO -->
-    <main class="flex-1">
-      <section class="max-w-6xl mx-auto px-4 py-20">
-        <div class="bg-white rounded-2xl p-10 shadow-lg grid md:grid-cols-2 gap-8 items-center">
-          <div>
-            <h1 class="text-4xl font-bold mb-4">Odrop Marketplace — Crypto-first, Community-driven</h1>
-            <p class="text-lg text-slate-600 mb-6">Buy and sell items using crypto (BTC, ETH, XRP, USDC, PLS). Safe listings, profile system, and quick mock checkout to test flows. Data is stored locally for now — we'll migrate to a DB later.</p>
-            <div class="flex gap-3">
-              <a href="marketplace.html" class="px-6 py-3 rounded-lg bg-sky-600 text-white font-medium shadow hover:bg-sky-700">Browse Listings</a>
-              <a href="sell.html" class="px-6 py-3 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50">Start Selling</a>
-            </div>
-            <div class="mt-6 text-sm text-slate-500">Tip: create a profile first so buyers can contact you and you can change username (1× per 30 days).</div>
-          </div>
-
-          <div class="relative">
-            <div class="rounded-lg overflow-hidden bg-gradient-to-br from-sky-500 to-indigo-500 p-10 text-white">
-              <img src="images/hero-bg.jpg" alt="hero" class="w-full object-cover rounded-lg opacity-50" />
-              <div class="absolute inset-10">
-                <h3 class="text-2xl font-semibold mb-3">Trusted Suppliers</h3>
-                <p class="text-slate-100/90">We recommend verified merchants and crypto-friendly suppliers for dropshipping. Sellers must add tracking for releases.</p>
-              </div>
-            </div>
-          </div>
+      <!-- Notifications -->
+      <div id="notification-bell" class="relative cursor-pointer">
+        🔔
+        <span id="notif-count" class="absolute -top-2 -right-2 bg-red-600 text-xs rounded-full px-1 hidden">0</span>
+        <div id="notif-panel" class="hidden absolute right-0 mt-3 w-64 bg-gray-800 text-white rounded-lg shadow-lg p-3">
+          <p class="text-sm text-gray-400 mb-2">Notifications</p>
+          <div id="notif-list" class="space-y-2 text-sm"></div>
         </div>
-
-        <!-- quick features -->
-        <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="p-6 bg-white rounded-xl shadow-sm">
-            <h4 class="font-semibold mb-2">Escrow-like flow</h4>
-            <p class="text-sm text-slate-600">Mock escrow: buyer posts tx-hash after payment — seller marks shipped and buyer verifies delivery.</p>
-          </div>
-          <div class="p-6 bg-white rounded-xl shadow-sm">
-            <h4 class="font-semibold mb-2">Simple profiles</h4>
-            <p class="text-sm text-slate-600">Rounded 500×500 avatar, change username every 30 days (name change anytime).</p>
-          </div>
-          <div class="p-6 bg-white rounded-xl shadow-sm">
-            <h4 class="font-semibold mb-2">Limited crypto</h4>
-            <p class="text-sm text-slate-600">Payments limited to BTC, ETH, XRP, USDC, PLS. Keeps things simple for listing and checkout.</p>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="bg-white/80 border-t">
-      <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-slate-600">© 2025 Odrop — Local demo. Data stored in your browser. Later: DB, Metamask login, ONWPAY integration.</div>
-    </footer>
-  </div>
-
-  <!-- cart popup & minimal script loader -->
-  <div id="cart-popup" class="fixed inset-0 flex items-center justify-center bg-black/50 hidden z-50">
-    <div class="bg-white rounded-xl p-6 w-full max-w-md">
-      <h3 class="font-semibold mb-4">Cart</h3>
-      <div id="cart-contents" class="text-sm text-slate-700 mb-4">No items in cart</div>
-      <div class="flex justify-end gap-3">
-        <button id="close-cart" class="px-4 py-2 rounded bg-slate-100">Close</button>
       </div>
-    </div>
-  </div>
 
-  <script src="script.js" defer></script>
-</body>
-</html>
+      <!-- Theme Switch -->
+      <button id="theme-toggle" class="bg-gray-700 px-3 py-1 rounded-md hover:bg-gray-600 transition">
+        🌙
+      </button>
+    </div>
+  </nav>
+
+  <!-- 🧠 Navbar Logic -->
+  <script>
+    // 🌙 Theme Toggle
+    const themeToggle = document.getElementById("theme-toggle");
+    const html = document.documentElement;
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "light") html.classList.remove("dark");
+    else html.classList.add("dark");
+
+    themeToggle.textContent = html.classList.contains("dark") ? "🌙" : "☀️";
+
+    themeToggle.addEventListener("click", () => {
+      html.classList.toggle("dark");
+      const newTheme = html.classList.contains("dark") ? "dark" : "light";
+      localStorage.setItem("theme", newTheme);
+      themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
+    });
+
+    // 🛒 Cart Count
+    const cartCount = document.getElementById("cart-count");
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    if (cart.length > 0) {
+      cartCount.textContent = cart.length;
+      cartCount.classList.remove("hidden");
+    }
+
+    // 🔔 Notifications
+    const notifBell = document.getElementById("notification-bell");
+    const notifPanel = document.getElementById("notif-panel");
+    const notifList = document.getElementById("notif-list");
+    const notifCount = document.getElementById("notif-count");
+
+    let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+
+    function renderNotifications() {
+      notifList.innerHTML = notifications.length
+        ? notifications.map(n => `<div class='bg-gray-700 p-2 rounded'>${n}</div>`).join("")
+        : `<p class='text-gray-500'>No new notifications</p>`;
+      notifCount.textContent = notifications.length;
+      notifCount.classList.toggle("hidden", notifications.length === 0);
+    }
+
+    notifBell.addEventListener("click", () => {
+      notifPanel.classList.toggle("hidden");
+    });
+
+    renderNotifications();
+  </script>
