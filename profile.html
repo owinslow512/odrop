@@ -1,95 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile — Odrop</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="fade.css">
+  <title>Profile</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
-<header class="navbar">
-  <a href="index.html" class="logo">Odrop</a>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="marketplace.html">Marketplace</a>
-    <a href="sell.html">Sell</a>
-    <a href="profile.html" class="active">Profile</a>
-    <span id="cartCount" class="cart-bubble">0</span>
-  </nav>
-</header>
 
-<div class="container fade-in">
-  <div class="profile-card">
-    <img id="profilePic" class="profile-pic" src="assets/default-pfp.png" alt="Profile Picture">
-    <h2 id="usernameDisplay">Guest</h2>
-    <p id="statusText">Not signed in</p>
+  <h2>Upload Profile Picture</h2>
 
-    <input type="file" id="avatarInput" accept="image/*">
+  <!-- Display user avatar -->
+  <img id="avatar" src="" width="120" style="border-radius: 50%;" />
 
-    <input type="text" id="usernameInput" placeholder="Change username...">
+  <br><br>
 
-    <button id="saveUsernameBtn" class="btn-primary">Save Username</button>
-    <button id="logoutBtn" class="btn-danger logout">Logout</button>
-  </div>
-</div>
+  <!-- File input -->
+  <input type="file" id="profileUpload" />
+  <button id="uploadBtn">Upload</button>
 
-<script src="main.js"></script>
-<script src="fade.js"></script>
+  <p id="status"></p>
 
-<script>
-function loadProfile() {
-  const user = JSON.parse(localStorage.getItem('odrop_user_v1'));
+  <script>
+    // YOUR SUPABASE KEYS HERE -----------------
+    const supabase = supabase.createClient(
+      "https://YOUR_PROJECT_URL.supabase.co",
+      "YOUR_PUBLIC_ANON_KEY"
+    );
+    //-----------------------------------------
 
-  const usernameDisplay = document.getElementById("usernameDisplay");
-  const statusText = document.getElementById("statusText");
-  const profilePic = document.getElementById("profilePic");
+    // Fake logged in user example — replace later with real auth
+    const user = { id: "example-user-id" };
 
-  if (!user) {
-    usernameDisplay.textContent = "Guest";
-    statusText.textContent = "Not signed in";
-    return;
-  }
+    // Load current avatar on page open
+    async function loadAvatar() {
+      const { data } = await supabase
+        .from("users")
+        .select("avatar_url")
+        .eq("id", user.id)
+        .single();
 
-  usernameDisplay.textContent = user.username || "User";
-  statusText.textContent = "Signed in";
+      if (data?.avatar_url) {
+        document.getElementById("avatar").src = data.avatar_url;
+      }
+    }
 
-  if (user.avatar) {
-    profilePic.src = user.avatar;
-  }
-}
+    loadAvatar();
 
-document.getElementById("saveUsernameBtn").addEventListener("click", () => {
-  const username = document.getElementById("usernameInput").value.trim();
-  if (!username) return;
 
-  const user = JSON.parse(localStorage.getItem('odrop_user_v1')) || {};
-  user.username = username;
+    // Upload button click
+    document.getElementById("uploadBtn").onclick = async () => {
+      const file = document.getElementById('profileUpload').files[0];
 
-  localStorage.setItem("odrop_user_v1", JSON.stringify(user));
-  loadProfile();
-});
+      if (!file) {
+        alert("Pick a file first!");
+        return;
+      }
 
-document.getElementById("avatarInput").addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onload = function(ev) {
-    const user = JSON.parse(localStorage.getItem('odrop_user_v1')) || {};
-    user.avatar = ev.target.result;
-    localStorage.setItem("odrop_user_v1", JSON.stringify(user));
-    loadProfile();
-  };
-  reader.readAsDataURL(file);
-});
+      document.getElementById("status").innerText = "Uploading...";
 
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  localStorage.removeItem("odrop_user_v1");
-  window.location.href = "login.html";
-});
+      const filePath = `profiles/${crypto.randomUUID()}`;
 
-loadProfile();
-</script>
+      // Upload file
+      const { data, error } = await supabase.storage
+        .from('odorp-files')
+        .upload(filePath, file);
+
+      if (error) {
+        alert("Upload error: " + error.message);
+        return;
+      }
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('odorp-files')
+        .getPublicUrl(data.path);
+
+      // Save URL to user table
+      await supabase
+        .from("users")
+        .update({ avatar_url: urlData.publicUrl })
+        .eq("id", user.id);
+
+      document.getElementById("avatar").src = urlData.publicUrl;
+      document.getElementById("status").innerText = "✅ Profile photo updated!";
+    };
+  </script>
 
 </body>
+
 </html>
