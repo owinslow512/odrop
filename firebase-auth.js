@@ -1,8 +1,13 @@
-<!-- include these scripts in pages where you use Firebase auth -->
-<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  sendEmailVerification,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
-<script>
 const firebaseConfig = {
   apiKey: "AIzaSyCPnsRvqauy3OtBuMc-q39HFNc6u-bk6nw",
   authDomain: "odrop-98516.firebaseapp.com",
@@ -11,31 +16,22 @@ const firebaseConfig = {
   messagingSenderId: "127741872375",
   appId: "1:127741872375:web:2acc4fb95ffb06b63e2bf2"
 };
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.getAuth(app);
 
-// signup example
-async function firebaseSignup(email, password) {
-  const { createUserWithEmailAndPassword, sendEmailVerification } = firebase.auth;
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  await sendEmailVerification(userCredential.user); // <--- sendEmailVerification goes here
-  return userCredential;
-}
-window.firebaseSignup = firebaseSignup;
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-// login example
-async function firebaseLogin(email, password) {
-  const { signInWithEmailAndPassword } = firebase.auth;
-  const userCredential = await signInWithEmailAndPassword(auth, email, password);
-  return userCredential;
-}
-window.firebaseLogin = firebaseLogin;
+window.firebaseSignup = async (email, password) => {
+  const userCred = await createUserWithEmailAndPassword(auth, email, password);
+  await sendEmailVerification(userCred.user);
+  return userCred;
+};
 
-// auth state listener
-firebase.auth.onAuthStateChanged(auth, (user) => {
-  if(user) {
-    // user is signed in
-    localStorage.setItem('odrop_user_v1', user.email || user.uid);
-  }
+window.firebaseLogin = async (email, password) => {
+  const userCred = await signInWithEmailAndPassword(auth, email, password);
+  return userCred;
+};
+
+onAuthStateChanged(auth, user => {
+  if(user) localStorage.setItem('odrop_user_v1', user.email || user.uid);
 });
 </script>
