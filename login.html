@@ -1,185 +1,44 @@
-<!-- 🌐 Universal Navbar -->
-<nav class="flex justify-between items-center px-6 py-4 bg-gray-900 text-white shadow-md">
-  <a href="index.html" class="text-2xl font-bold hover:text-blue-400 transition">Odrop</a>
-
-  <div class="flex items-center space-x-6">
-    <a href="index.html" class="hover:text-blue-400">Home</a>
-    <a href="marketplace.html" class="hover:text-blue-400">Marketplace</a>
-    <a href="cart.html" id="cart-link" class="hover:text-blue-400 flex items-center">
-      🛒<span id="cart-count" class="ml-1 text-sm bg-red-600 px-2 py-0.5 rounded-full hidden">0</span>
-    </a>
-    <a href="profile.html" class="hover:text-blue-400">Profile</a>
-
-    <!-- Notifications -->
-    <div id="notification-bell" class="relative cursor-pointer">
-      🔔
-      <span id="notif-count" class="absolute -top-2 -right-2 bg-red-600 text-xs rounded-full px-1 hidden">0</span>
-      <div id="notif-panel" class="hidden absolute right-0 mt-3 w-64 bg-gray-800 text-white rounded-lg shadow-lg p-3">
-        <p class="text-sm text-gray-400 mb-2">Notifications</p>
-        <div id="notif-list" class="space-y-2 text-sm"></div>
-      </div>
-    </div>
-
-    <!-- Theme Switch -->
-    <button id="theme-toggle" class="bg-gray-700 px-3 py-1 rounded-md hover:bg-gray-600 transition">
-      🌙
-    </button>
-  </div>
-</nav>
-
-<script>
-  // 🌙 Theme Toggle
-  const themeToggle = document.getElementById("theme-toggle");
-  const html = document.documentElement;
-  const savedTheme = localStorage.getItem("theme");
-
-  if (savedTheme === "light") html.classList.remove("dark");
-  else html.classList.add("dark");
-
-  themeToggle.textContent = html.classList.contains("dark") ? "🌙" : "☀️";
-
-  themeToggle.addEventListener("click", () => {
-    html.classList.toggle("dark");
-    const newTheme = html.classList.contains("dark") ? "dark" : "light";
-    localStorage.setItem("theme", newTheme);
-    themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
-  });
-
-  // 🛒 Cart Count (demo)
-  const cartCount = document.getElementById("cart-count");
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  if (cart.length > 0) {
-    cartCount.textContent = cart.length;
-    cartCount.classList.remove("hidden");
-  }
-
-  // 🔔 Notification system (local demo)
-  const notifBell = document.getElementById("notification-bell");
-  const notifPanel = document.getElementById("notif-panel");
-  const notifList = document.getElementById("notif-list");
-  const notifCount = document.getElementById("notif-count");
-
-  let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
-
-  function renderNotifications() {
-    notifList.innerHTML = notifications.length
-      ? notifications.map(n => `<div class="bg-gray-700 p-2 rounded">${n}</div>`).join("")
-      : `<p class="text-gray-500">No new notifications</p>`;
-    notifCount.textContent = notifications.length;
-    notifCount.classList.toggle("hidden", notifications.length === 0);
-  }
-
-  notifBell.addEventListener("click", () => {
-    notifPanel.classList.toggle("hidden");
-  });
-
-  renderNotifications();
-
-  // Example: Add a fake notification (for testing)
-  // notifications.push("Someone wants to buy your product!");
-  // localStorage.setItem("notifications", JSON.stringify(notifications));
-  // renderNotifications();
-</script>
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login | Odrop</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-    import {
-      getAuth,
-      signInWithEmailAndPassword,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCPnsRvqauy3OtBuMc-q39HFNc6u-bk6nw",
-      authDomain: "odrop-98516.firebaseapp.com",
-      projectId: "odrop-98516",
-      storageBucket: "odrop-98516.firebasestorage.app",
-      messagingSenderId: "127741872375",
-      appId: "1:127741872375:web:2acc4fb95ffb06b63e2bf2"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // Redirect if already logged in
-    onAuthStateChanged(auth, (user) => {
-      if (user) window.location.href = "profile.html";
-    });
-
-    // Login logic
-    window.loginUser = async function (event) {
-      event.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        alert("Login successful!");
-        window.location.href = "profile.html";
-      } catch (error) {
-        alert(error.message);
-      }
-    };
-
-    // Navigation buttons
-    window.goHome = () => (window.location.href = "index.html");
-    window.goProducts = () => (window.location.href = "products.html");
-    window.goProfile = () => (window.location.href = "profile.html");
-    window.goAbout = () => (window.location.href = "about.html");
-    window.goContact = () => (window.location.href = "contact.html");
-    window.goSignup = () => (window.location.href = "signup.html");
-  </script>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Login — Odrop</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
 </head>
-
-<body class="bg-gray-900 text-white flex flex-col min-h-screen">
-
-  <!-- ✅ Navbar -->
-  <nav class="bg-gray-800 text-white shadow-md flex items-center justify-between px-6 py-3 fixed w-full top-0 z-50">
-    <div onclick="goHome()" class="text-2xl font-bold cursor-pointer hover:text-blue-400 transition">
-      Odrop
-    </div>
-    <div class="space-x-6 hidden md:flex">
-      <button onclick="goHome()" class="hover:text-blue-400 transition">Home</button>
-      <button onclick="goProducts()" class="hover:text-blue-400 transition">Marketplace</button>
-      <button onclick="goProfile()" class="hover:text-blue-400 transition">Profile</button>
-      <button onclick="goAbout()" class="hover:text-blue-400 transition">About</button>
-      <button onclick="goContact()" class="hover:text-blue-400 transition">Contact</button>
-    </div>
-    <div class="flex items-center space-x-4">
-      <button onclick="goSignup()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm">Sign Up</button>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center">
+    <div class="text-2xl font-bold cursor-pointer" onclick="goHome()">Odrop</div>
+    <div>
+      <button onclick="goSignup()" class="bg-green-600 px-3 py-1 rounded">Sign Up</button>
     </div>
   </nav>
 
-  <div class="h-16"></div>
-
-  <!-- Login Form -->
-  <main class="flex-grow flex justify-center items-center">
-    <div class="bg-gray-800 rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
-      <h1 class="text-2xl font-bold mb-6">Welcome Back</h1>
-      <form onsubmit="loginUser(event)" class="flex flex-col space-y-3">
-        <input id="email" type="email" placeholder="Email"
-          class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <input id="password" type="password" placeholder="Password"
-          class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg">Log In</button>
-      </form>
-
-      <p class="text-gray-400 text-sm mt-4">
-        Don’t have an account?
-        <button onclick="goSignup()" class="text-blue-400 hover:underline">Sign up</button>
-      </p>
-    </div>
+  <main class="max-w-md mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-4">Log In</h1>
+    <form id="loginForm" class="bg-white dark:bg-gray-800 p-6 rounded shadow">
+      <input id="email" class="w-full p-2 rounded border mb-3 dark:bg-gray-700" placeholder="Email" />
+      <input id="password" type="password" class="w-full p-2 rounded border mb-3 dark:bg-gray-700" placeholder="Password" />
+      <button class="bg-blue-600 text-white px-4 py-2 rounded">Log In</button>
+    </form>
+    <p class="mt-3 text-sm">Don't have an account? <a href="signup.html" class="text-blue-400">Sign up</a></p>
   </main>
 
-  <footer class="text-center text-gray-500 py-4 text-sm">
-    © 2025 Odrop. All rights reserved.
-  </footer>
-
+  <script src="main.js"></script>
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", (e)=>{
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const pw = document.getElementById("password").value;
+      if(!email || !pw) { alert("Please enter email and password."); return; }
+      // simple local auth: if user exists, check password; else fail
+      const user = JSON.parse(localStorage.getItem("odropUser") || "null");
+      if(user && user.email === email && user.password === pw){
+        alert("Welcome back!");
+        window.location.href = "profile.html";
+      } else {
+        alert("Invalid credentials or account doesn't exist. Use Sign up.");
+      }
+    });
+  </script>
 </body>
 </html>
