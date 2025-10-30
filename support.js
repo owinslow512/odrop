@@ -1,70 +1,52 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Support — Odrop</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script> tailwind.config = { darkMode: 'class' } </script>
-</head>
-<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
-  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center">
-    <div class="text-2xl font-bold cursor-pointer" onclick="goHome()">Odrop</div>
-    <div class="flex items-center space-x-6">
-      <button onclick="goMarketplace()">Marketplace</button>
-      <button onclick="goSell()">Sell</button>
-      <button onclick="goProfile()">Profile</button>
-      <button onclick="goSettings()">Settings</button>
-      <button id="themeBtn" class="text-xl"></button>
-    </div>
-  </nav>
+// support.js
+import { getAuth } from "firebase/auth";
 
-  <main class="max-w-2xl mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-4">Support</h1>
-    <form id="supportForm" class="bg-white dark:bg-gray-800 p-6 rounded shadow">
-      <label class="block mb-2">Full name</label>
-      <input id="sup_name" class="w-full p-2 rounded border dark:bg-gray-700 mb-3" />
+// ✅ EmailJS credentials
+const EMAILJS_SERVICE_ID = "service_8pofbon";
+const EMAILJS_TEMPLATE_SUPPORT_ID = "template_o4sdsjm";
+const EMAILJS_PUBLIC_KEY = "mqnVOPu2ysfQu72il";
 
-      <label class="block mb-2">Email</label>
-      <input id="sup_email" type="email" class="w-full p-2 rounded border dark:bg-gray-700 mb-3" />
+document.addEventListener("DOMContentLoaded", () => {
+  const supportForm = document.getElementById("supportForm");
 
-      <label class="block mb-2">Phone (optional)</label>
-      <input id="sup_phone" class="w-full p-2 rounded border dark:bg-gray-700 mb-3" />
+  if (!supportForm) return;
 
-      <label class="block mb-2">Reason</label>
-      <select id="sup_reason" class="w-full p-2 rounded border dark:bg-gray-700 mb-3">
-        <option>Scam</option>
-        <option>Account Issue</option>
-        <option>Bug Report</option>
-        <option>Feedback</option>
-        <option>Other</option>
-      </select>
+  supportForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      <label class="block mb-2">Message</label>
-      <textarea id="sup_msg" class="w-full p-2 rounded border dark:bg-gray-700 mb-3"></textarea>
+    const auth = getAuth();
+    const user = auth.currentUser;
 
-      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Send Support Request</button>
-    </form>
+    const name = document.getElementById("supportName").value;
+    const email = document.getElementById("supportEmail").value;
+    const phone = document.getElementById("supportPhone").value;
+    const reason = document.getElementById("supportReason").value;
+    const message = document.getElementById("supportMessage").value;
 
-    <p id="supportStatus" class="mt-3 text-sm"></p>
-  </main>
+    try {
+      const emailData = {
+        from_name: name,
+        from_email: email,
+        phone_number: phone || "Not provided",
+        reason_for_help: reason,
+        message,
+        user_email: user ? user.email : "Guest",
+      };
 
-  <script src="main.js"></script>
-  <script>
-    odrop.initThemeButton("themeBtn");
-    document.getElementById("supportForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("sup_name").value.trim();
-      const email = document.getElementById("sup_email").value.trim();
-      const phone = document.getElementById("sup_phone").value.trim();
-      const reason = document.getElementById("sup_reason").value;
-      const message = document.getElementById("sup_msg").value.trim();
-      if(!name || !email || !message){ alert("Please enter name, email and message."); return; }
-      document.getElementById("supportStatus").textContent = "Sending...";
-      const res = await odrop.submitSupport({name,email,phone,reason,message});
-      document.getElementById("supportStatus").textContent = res.ok ? "Support request sent!" : "Saved locally (email not configured).";
-      document.getElementById("supportForm").reset();
-    });
-  </script>
-</body>
-</html>
+      // ✅ Send support email
+      const response = await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_SUPPORT_ID,
+        emailData,
+        EMAILJS_PUBLIC_KEY
+      );
+
+      console.log("Support email sent:", response);
+      alert("Your support request has been sent!");
+      supportForm.reset();
+    } catch (error) {
+      console.error("Error sending support email:", error);
+      alert("Error submitting support request. Please try again.");
+    }
+  });
+});
