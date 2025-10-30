@@ -1,1 +1,63 @@
 
+<!doctype html>
+<html><head>
+<meta charset="utf-8"><title>Reset Password</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="fade.css">
+<script src="main.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', ()=> {
+  emailjs.init('mqnVOPu2ysfQu72il'); // your public key
+});
+</script>
+</head>
+<body class="fade-in">
+<main style="max-width:700px;margin:60px auto;padding:20px">
+  <h1>Forgot password</h1>
+  <p>Enter the username to request a password reset link.</p>
+  <input id="fp_user" class="input" placeholder="Username or email">
+  <button id="fp_send">Send reset link</button>
+  <p id="fp_msg"></p>
+</main>
+
+<script>
+const SERVICE_ID = 'service_8pofbon';
+const TEMPLATE_ID = 'template_password_reset'; // <-- replace with your created template id
+
+function generateToken(){ return Math.random().toString(36).slice(2,12); }
+
+document.getElementById('fp_send').addEventListener('click', async ()=> {
+  const u = document.getElementById('fp_user').value.trim();
+  const msg = document.getElementById('fp_msg');
+  msg.textContent = '';
+
+  if(!u){ showFieldError(document.getElementById('fp_user'), 'Enter username or email'); return; }
+
+  // find user (local storage)
+  const users = odrop.storage.loadJSON('odrop_users', []);
+  const user = users.find(x=> x.username === u || (x.email && x.email === u));
+  if(!user){ msg.textContent = 'User not found'; return; }
+
+  const token = generateToken();
+  const tokens = odrop.storage.loadJSON('odrop_reset_tokens', []);
+  tokens.push({ token, user: user.username, expires: Date.now()+3600*1000 });
+  odrop.storage.saveJSON('odrop_reset_tokens', tokens);
+
+  const resetLink = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '') + 'reset.html?token=' + token;
+
+  // try to send via EmailJS
+  try {
+    await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+      to_email: user.email || u,
+      username: user.username,
+      reset_link: resetLink
+    });
+    msg.textContent = 'Reset link sent to your email (check spam).';
+  } catch (err) {
+    console.warn('EmailJS failed, fallback to showing token', err);
+    msg.innerHTML = 'Unable to email link — copy this token and open Reset page:<br><code style="display:block;margin-top:8px">'+token+'</code><br><a href="reset.html?token='+token+'">Open reset page</a>';
+  }
+});
+</script>
+</body></html>
