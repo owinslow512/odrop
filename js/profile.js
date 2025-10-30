@@ -40,5 +40,64 @@ document.addEventListener('DOMContentLoaded', () => {
     user.username = name; userSave(user); localStorage.setItem(KEY_USERNAME_TS, String(now));
     alert('Username updated.');
     usernameEl.textContent = name;
+  
+  // profile helpers
+function readProfile() {
+  return odrop.storage.loadJSON('odrop_profile', { username: localStorage.getItem('odrop_user_v1') || '', avatar: null, fullName:'' });
+}
+function saveProfile(profile) { odrop.storage.saveJSON('odrop_profile', profile); }
+
+async function setAvatarFromInput(fileInput) {
+  const file = fileInput.files[0];
+  if(!file) return;
+  const img = await readFileAsImage(file);
+  // draw into 500x500 canvas
+  const canvas = document.createElement('canvas');
+  canvas.width = 500; canvas.height = 500;
+  const ctx = canvas.getContext('2d');
+  // draw white background or transparent
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0,0,500,500);
+  // calculate fit
+  let w = img.width, h = img.height;
+  const ratio = Math.min(500/w, 500/h);
+  const nw = w*ratio, nh = h*ratio;
+  ctx.drawImage(img, (500-nw)/2, (500-nh)/2, nw, nh);
+  const data = canvas.toDataURL('image/png');
+  const p = readProfile();
+  p.avatar = data;
+  saveProfile(p);
+  return data;
+}
+function readFileAsImage(file){
+  return new Promise((res, rej)=> {
+    const fr = new FileReader();
+    fr.onload = ()=> {
+      const img = new Image();
+      img.onload = ()=> res(img);
+      img.onerror = rej;
+      img.src = fr.result;
+    };
+    fr.onerror = rej;
+    fr.readAsDataURL(file);
   });
+}
+
+// username change cooldown (30 days)
+function canChangeUsername() {
+  const last = parseInt(localStorage.getItem('odrop_username_ts') || 0);
+  return (Date.now() - last) > (30*24*3600*1000);
+}
+function saveUsername(newName) {
+  if(!/^[a-zA-Z0-9_-]{3,20}$/.test(newName)) throw new Error('Bad username');
+  if(!canChangeUsername()) throw new Error('You can only change username once every 30 days');
+  const p = readProfile();
+  p.username = newName;
+  saveProfile(p);
+  localStorage.setItem('odrop_username_ts', Date.now());
+}
+window.setAvatarFromInput = setAvatarFromInput;
+window.saveUsername = saveUsername;
+window.readProfile = readProfile;
+ });
 });
