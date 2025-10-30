@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Your Cart — Odrop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          keyframes: {
+            fadeIn: { '0%': { opacity: 0, transform: 'translateY(15px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+            pop: { '0%': { transform: 'scale(0.95)', opacity: 0 }, '100%': { transform: 'scale(1)', opacity: 1 } }
+          },
+          animation: {
+            fadeIn: 'fadeIn 0.4s ease-out forwards',
+            pop: 'pop 0.3s ease-out forwards'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+  <!-- Navbar -->
+  <nav class="bg-gray-900 text-white p-4 flex justify-between items-center shadow-lg">
+    <div class="text-2xl font-bold cursor-pointer" onclick="goHome()">Odrop</div>
+    <div class="flex items-center space-x-6">
+      <button onclick="goMarketplace()" class="hover:text-blue-300">Marketplace</button>
+      <button onclick="goProfile()" class="hover:text-blue-300">Profile</button>
+      <button onclick="goSupport()" class="hover:text-blue-300">Support</button>
+      <button onclick="goSettings()" class="hover:text-blue-300">Settings</button>
+      <button id="themeBtn" class="text-xl"></button>
+    </div>
+  </nav>
+
+  <!-- Cart Section -->
+  <main class="max-w-4xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 animate-fadeIn">Your Cart</h1>
+    <div id="cartGrid" class="space-y-4"></div>
+
+    <div id="cartFooter" class="hidden mt-8 border-t border-gray-300 dark:border-gray-700 pt-4 flex items-center justify-between animate-fadeIn">
+      <div class="text-lg font-semibold">Total: <span id="cartTotal" class="text-blue-500"></span></div>
+      <div class="flex gap-3">
+        <button onclick="clearCart()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition">Clear Cart</button>
+        <button onclick="checkout()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition">Checkout</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="main.js"></script>
+  <script>
+    odrop.initThemeButton("themeBtn");
+
+    const cartGrid = document.getElementById("cartGrid");
+    const cartFooter = document.getElementById("cartFooter");
+    const cartTotal = document.getElementById("cartTotal");
+
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+      if (cart.length === 0) {
+        cartGrid.innerHTML = `
+          <p class="text-gray-500 dark:text-gray-400 animate-fadeIn">
+            Your cart is empty. 
+            <button class="text-blue-400 underline" onclick="goMarketplace()">Go to Marketplace</button>.
+          </p>`;
+        cartFooter.classList.add("hidden");
+        return;
+      }
+
+      cartFooter.classList.remove("hidden");
+
+      let total = 0;
+      cartGrid.innerHTML = cart.map((item, index) => {
+        total += parseFloat(item.price) || 0;
+        return `
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex items-center justify-between animate-pop">
+            <div class="flex items-center space-x-4">
+              <div class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded overflow-hidden flex items-center justify-center">
+                ${item.images && item.images[0]
+                  ? `<img src="${item.images[0].data}" class="object-cover w-full h-full transition hover:scale-105 duration-300" />`
+                  : `<div class="text-gray-400">No image</div>`}
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold">${item.title}</h2>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">${item.price} ${item.currency}</p>
+              </div>
+            </div>
+            <button onclick="removeItem(${index})" class="text-red-500 hover:text-red-600 font-semibold transition">Remove</button>
+          </div>`;
+      }).join('');
+
+      cartTotal.textContent = `${total.toFixed(2)} ${cart[0]?.currency || ''}`;
+    }
+
+    function removeItem(index) {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    function clearCart() {
+      localStorage.removeItem("cart");
+      loadCart();
+    }
+
+    function checkout() {
+      alert("✅ Checkout process started!");
+      localStorage.removeItem("cart");
+      loadCart();
+    }
+
+    // Navigation helpers
+    function goHome() { window.location.href = "index.html"; }
+    function goMarketplace() { window.location.href = "marketplace.html"; }
+    function goProfile() { window.location.href = "profile.html"; }
+    function goSupport() { window.location.href = "contact.html"; }
+    function goSettings() { window.location.href = "settings.html"; }
+
+    loadCart();
+  </script>
+</body>
+</html>
