@@ -1,92 +1,172 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <title>Profile</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>My Profile | Odorp</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background:#f5f5f5;
+        margin:0;
+        padding:0;
+    }
+    nav {
+        background:#111;
+        padding:12px 20px;
+        color:white;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+    }
+    nav a {
+        color:white;
+        margin-left:15px;
+        text-decoration:none;
+        font-weight:bold;
+    }
+    nav a:hover { text-decoration:underline; }
+
+    .container {
+        background:white;
+        width:400px;
+        margin:60px auto;
+        padding:25px;
+        border-radius:8px;
+        text-align:center;
+        box-shadow:0 4px 10px rgba(0,0,0,0.15);
+    }
+    img {
+        border-radius:50%;
+        width:120px;
+        height:120px;
+        object-fit:cover;
+        margin-bottom:15px;
+        background:#ddd;
+    }
+    button {
+        padding:8px 16px;
+        cursor:pointer;
+        margin-top:10px;
+    }
+</style>
 </head>
 
 <body>
 
-  <h2>Upload Profile Picture</h2>
+<nav>
+    <span><b>Odorp</b></span>
+    <div id="auth-links">
+        <!-- JS fills this -->
+    </div>
+</nav>
 
-  <!-- Display user avatar -->
-  <img id="avatar" src="" width="120" style="border-radius: 50%;" />
+<div class="container">
+    <h2>Your Profile</h2>
+    
+    <img id="avatar" src="default-avatar.png">
 
-  <br><br>
+    <br>
 
-  <!-- File input -->
-  <input type="file" id="profileUpload" />
-  <button id="uploadBtn">Upload</button>
+    <input type="file" id="profileUpload">
+    <button id="uploadBtn">Upload Picture</button>
 
-  <p id="status"></p>
+    <p id="status"></p>
+</div>
 
-  <script>
-    // YOUR SUPABASE KEYS HERE -----------------
-    const supabase = supabase.createClient(
-      "https://vjhtwuuoqrcakxncngpr.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaHR3dXVvcXJjYWt4bmNuZ3ByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4MzU2MDgsImV4cCI6MjA3NzQxMTYwOH0.CGrAODgW7W4g_RrVrLdAsnZam6bxYKVN4PuH1gjFDq8"
-    );
-    //-----------------------------------------
+<script>
+// =====================
+// Supabase connection
+// =====================
+const supabase = supabase.createClient(
+  "https://vjhtwuuoqrcakxncngpr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaHR3dXVvcXJjYWt4bmNuZ3ByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4MzU2MDgsImV4cCI6MjA3NzQxMTYwOH0.CGrAODgW7W4g_RrVrLdAsnZam6bxYKVN4PuH1gjFDq8"
+);
 
-    // Fake logged in user example — replace later with real auth
-    const user = { id: "example-user-id" };
+// =====================
+// Load logged in user
+// =====================
+const user = JSON.parse(localStorage.getItem("user"));
 
-    // Load current avatar on page open
-    async function loadAvatar() {
-      const { data } = await supabase
+if (!user) {
+    alert("You must be logged in first");
+    window.location = "login.html";
+}
+
+// Auth nav buttons
+function updateNav(){
+    const nav = document.getElementById("auth-links");
+    if(user){
+        nav.innerHTML = `
+            <a href="index.html">Home</a>
+            <a href="profile.html">Profile</a>
+            <a href="#" id="logoutBtn">Logout</a>
+        `;
+        document.getElementById("logoutBtn").onclick = () => {
+            localStorage.removeItem("user");
+            window.location = "login.html";
+        }
+    } else {
+        nav.innerHTML = `
+            <a href="login.html">Login</a>
+            <a href="signup.html">Signup</a>
+        `;
+    }
+}
+updateNav();
+
+// =====================
+// Load avatar
+// =====================
+async function loadAvatar() {
+    const { data } = await supabase
         .from("users")
         .select("avatar_url")
         .eq("id", user.id)
         .single();
 
-      if (data?.avatar_url) {
+    if (data?.avatar_url) {
         document.getElementById("avatar").src = data.avatar_url;
-      }
+    }
+}
+loadAvatar();
+
+// =====================
+// Upload avatar
+// =====================
+document.getElementById("uploadBtn").onclick = async () => {
+    const file = document.getElementById("profileUpload").files[0];
+    if (!file) {
+        alert("Choose a file first!");
+        return;
     }
 
-    loadAvatar();
+    document.getElementById("status").innerText = "Uploading...";
 
+    const filePath = `avatars/${user.id}-${Date.now()}.jpg`;
 
-    // Upload button click
-    document.getElementById("uploadBtn").onclick = async () => {
-      const file = document.getElementById('profileUpload').files[0];
+    const { data, error } = await supabase.storage
+        .from("odorp-files")
+        .upload(filePath, file, { upsert: true });
 
-      if (!file) {
-        alert("Pick a file first!");
+    if (error) {
+        document.getElementById("status").innerText = "Upload failed!";
         return;
-      }
+    }
 
-      document.getElementById("status").innerText = "Uploading...";
-
-      const filePath = `profiles/${crypto.randomUUID()}`;
-
-      // Upload file
-      const { data, error } = await supabase.storage
-        .from('odorp-files')
-        .upload(filePath, file);
-
-      if (error) {
-        alert("Upload error: " + error.message);
-        return;
-      }
-
-      // Get public URL
-      const { data: urlData } = supabase.storage
-        .from('odorp-files')
+    const { data: urlData } = supabase.storage
+        .from("odorp-files")
         .getPublicUrl(data.path);
 
-      // Save URL to user table
-      await supabase
+    await supabase
         .from("users")
         .update({ avatar_url: urlData.publicUrl })
         .eq("id", user.id);
 
-      document.getElementById("avatar").src = urlData.publicUrl;
-      document.getElementById("status").innerText = "✅ Profile photo updated!";
-    };
-  </script>
+    document.getElementById("avatar").src = urlData.publicUrl;
+    document.getElementById("status").innerText = "✅ Saved!";
+};
+</script>
 
 </body>
-
 </html>
