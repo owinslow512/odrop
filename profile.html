@@ -1,11 +1,95 @@
-<div class="profile-card">
-  <img id="profilePic" class="profile-pic" src="assets/default-pfp.png" alt="Profile Picture">
-  <h2 id="usernameDisplay">Guest</h2>
-  <p id="statusText">Not signed in</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile — Odrop</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="fade.css">
+</head>
 
-  <input type="file" id="avatarInput" accept="image/*">
-  <input type="text" id="usernameInput" placeholder="Change username...">
+<body>
+<header class="navbar">
+  <a href="index.html" class="logo">Odrop</a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="sell.html">Sell</a>
+    <a href="profile.html" class="active">Profile</a>
+    <span id="cartCount" class="cart-bubble">0</span>
+  </nav>
+</header>
 
-  <button id="saveUsernameBtn">Save Username</button>
-  <button id="logoutBtn" class="logout-btn">Logout</button>
+<div class="container fade-in">
+  <div class="profile-card">
+    <img id="profilePic" class="profile-pic" src="assets/default-pfp.png" alt="Profile Picture">
+    <h2 id="usernameDisplay">Guest</h2>
+    <p id="statusText">Not signed in</p>
+
+    <input type="file" id="avatarInput" accept="image/*">
+
+    <input type="text" id="usernameInput" placeholder="Change username...">
+
+    <button id="saveUsernameBtn" class="btn-primary">Save Username</button>
+    <button id="logoutBtn" class="btn-danger logout">Logout</button>
+  </div>
 </div>
+
+<script src="main.js"></script>
+<script src="fade.js"></script>
+
+<script>
+function loadProfile() {
+  const user = JSON.parse(localStorage.getItem('odrop_user_v1'));
+
+  const usernameDisplay = document.getElementById("usernameDisplay");
+  const statusText = document.getElementById("statusText");
+  const profilePic = document.getElementById("profilePic");
+
+  if (!user) {
+    usernameDisplay.textContent = "Guest";
+    statusText.textContent = "Not signed in";
+    return;
+  }
+
+  usernameDisplay.textContent = user.username || "User";
+  statusText.textContent = "Signed in";
+
+  if (user.avatar) {
+    profilePic.src = user.avatar;
+  }
+}
+
+document.getElementById("saveUsernameBtn").addEventListener("click", () => {
+  const username = document.getElementById("usernameInput").value.trim();
+  if (!username) return;
+
+  const user = JSON.parse(localStorage.getItem('odrop_user_v1')) || {};
+  user.username = username;
+
+  localStorage.setItem("odrop_user_v1", JSON.stringify(user));
+  loadProfile();
+});
+
+document.getElementById("avatarInput").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const user = JSON.parse(localStorage.getItem('odrop_user_v1')) || {};
+    user.avatar = ev.target.result;
+    localStorage.setItem("odrop_user_v1", JSON.stringify(user));
+    loadProfile();
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.removeItem("odrop_user_v1");
+  window.location.href = "login.html";
+});
+
+loadProfile();
+</script>
+
+</body>
+</html>
