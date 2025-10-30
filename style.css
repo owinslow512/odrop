@@ -185,3 +185,38 @@ footer {
   background: #fff;
   border-top: 1px solid #eee;
 }
+
+/* input focus and error animation */
+.input {
+  transition: box-shadow .18s ease, transform .12s ease;
+  box-shadow: 0 0 0 rgba(0,0,0,0);
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid var(--muted-border);
+}
+.input:focus {
+  outline: none;
+  box-shadow: 0 6px 18px rgba(59,130,246,0.12);
+  transform: translateY(-1px);
+}
+
+/* error shake */
+.shake {
+  animation: shake .42s;
+  border-color: #ff4d4f;
+}
+@keyframes shake {
+  0% { transform: translateX(0) }
+  20% { transform: translateX(-6px) }
+  40% { transform: translateX(6px) }
+  60% { transform: translateX(-4px) }
+  80% { transform: translateX(4px) }
+  100% { transform: translateX(0) }
+}
+
+/* subtle soft glow for valid */
+.valid {
+  box-shadow: 0 6px 18px rgba(16,185,129,0.08);
+  border-color: #10b981;
+}
+
